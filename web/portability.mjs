@@ -20,7 +20,12 @@ export function parseImport(text,baseCategories=[]) {
       if(!validKey||!review||typeof review.note!=='string'||review.note.length>4000||!validPlan||typeof review.updatedAt!=='string')throw Error('复盘记录内容无效');
     }
   }
-  const categoryIds=new Set();for(const c of state.categories){if(typeof c.id!=='string'||!c.id||typeof c.name!=='string'||categoryIds.has(c.id))throw Error('分类 ID 或名称无效');categoryIds.add(c.id)}
+  const categoryIds=new Set();for(const c of state.categories){if(typeof c.id!=='string'||!c.id||typeof c.name!=='string'||categoryIds.has(c.id))throw Error('分类 ID 或名称无效');
+    if(typeof c.color!=='string'||!/^#[0-9a-f]{6}$/i.test(c.color))throw Error(`分类 ${c.id} 的颜色无效`);
+    if(c.parentId!==null&&c.parentId!==undefined&&typeof c.parentId!=='string')throw Error(`分类 ${c.id} 的上级无效`);
+    categoryIds.add(c.id)}
+  const parents=new Map(state.categories.map(c=>[c.id,c.parentId]));
+  for(const c of state.categories){const seen=new Set([c.id]);let parent=c.parentId;while(parent){if(!categoryIds.has(parent)||seen.has(parent))throw Error(`分类 ${c.id} 的上级关系无效`);seen.add(parent);parent=parents.get(parent)}}
   const eventIds=new Set();let running=0;
   for(const e of state.events){if(typeof e.id!=='string'||!e.id||eventIds.has(e.id))throw Error('事件 ID 重复或无效');eventIds.add(e.id);
     if(!categoryIds.has(e.categoryId))throw Error(`事件 ${e.id} 的分类不存在`);

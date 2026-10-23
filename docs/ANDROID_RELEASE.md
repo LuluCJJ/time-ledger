@@ -26,4 +26,4 @@ The active phone trial was installed with the Android debug certificate. A new r
 3. Compare a fresh legacy Excel export against records added since starting Time Ledger; do not replace the newer phone ledger blindly.
 4. Rehearse the exact transition on a separate device or isolated profile. Do not uninstall or clear the active app until the restored copy has been checked.
 
-The local v29 debug-signed trial APK is for over-install testing only; its signer matches v28. The repository does not publish a signed APK yet. See [release readiness](RELEASE_READINESS.md) and [data boundary](DATA.md).
+The local v30 debug-signed trial APK is for over-install testing only; its signer matches v29 and v28. The repository does not publish a formally signed release APK yet. See [release readiness](RELEASE_READINESS.md) and [data boundary](DATA.md).

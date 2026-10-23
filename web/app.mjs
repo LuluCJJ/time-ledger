@@ -1,5 +1,5 @@
 import {MINUTE,seed,initializeCategories,ordered,propose,proposeSwitch,proposeSplit,proposeMergeSplit,allocate,localInput,time,dayKey,duration,clockParts,estimateStatus} from './model.mjs?v=21';
-import {parseImport,backupText,csvText} from './portability.mjs?v=20';
+import {parseImport,backupText,csvText} from './portability.mjs?v=21';
 import {parseLegacyExcel} from './legacy-excel.mjs?v=17';
 import {whiteLabelColor} from './color.mjs?v=19';
 import {periodInsights} from './insights.mjs?v=19';
