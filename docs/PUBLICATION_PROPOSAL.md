@@ -4,7 +4,7 @@ Status: first source-only publication completed on 2026-10-23. This document rec
 
 ## First milestone: public source preview
 
-Suggested repository slug: `time-ledger`. Publish the reviewed source, bilingual README, product/data boundaries, tests and third-party notices. Mark the first release as a **source preview**. Do not attach the current debug APK or the unsigned release artifact. Keep `docs/STATUS.md` explicit about phone backup, restoration and migration still needing verified evidence.
+The published repository is `LuluCJJ/time-ledger`. Its first milestone contains the source, bilingual README, product/data boundaries, tests and third-party notices as a **source preview**. No debug APK or unsigned release artifact is attached. Keep `docs/STATUS.md` explicit about phone backup, restoration and migration still needing verified evidence.
 
 The owner chose Apache-2.0 and a source-only first publication under the personal account [`LuluCJJ`](https://github.com/LuluCJJ). The public repository is [`LuluCJJ/time-ledger`](https://github.com/LuluCJJ/time-ledger). The Android installation package remains a separate release decision.
 

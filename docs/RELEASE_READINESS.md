@@ -10,7 +10,7 @@ Status: source-only preview published at [`LuluCJJ/time-ledger`](https://github.
 - [x] GitHub Actions source checks run on pushes and pull requests with full history, read-only token and Node 24. The clean public snapshot and its follow-up check both passed: [source check run](https://github.com/LuluCJJ/time-ledger/actions/runs/39917189683). Recheck each later release commit.
 - [x] Automated model and portability checks: 27 passing on 2026-10-23.
 - [x] Repeatable tracked-tree sensitive-file and secret-pattern check: `node scripts/check-public-tree.mjs` (current tree only).
-- [x] Repeatable Git history check: `node scripts/check-history.mjs` found no forbidden private-data paths or sensitive-pattern text in the prepublication development history on 2026-10-23. Public history is prepared as a single clean source snapshot to omit private development metadata. This does not replace human review of product wording and images.
+- [x] Repeatable Git history check: `node scripts/check-history.mjs` found no forbidden private-data paths or sensitive-pattern text in the current public branch history on 2026-10-23. It also reports the number of commits with non-GitHub-private author or committer emails without printing them; the current branch reports zero. Older detached GitHub cache views require separate cleanup. This does not replace human review of product wording and images.
 - [x] Compare unique historical Wiki scripts: both changed smoke scripts only point to the renamed `legacy_xls_converter.py`; the old `xls_to_demo.py` and README remain in the private Wiki as historical evidence. No older directory was deleted.
 - [x] Remove Capacitor's unused sample unit/instrumented tests; the latter asserted the scaffold package name rather than this app. `assembleDebug assembleRelease` still succeeded afterward.
 - [ ] Complete manual review of every tracked file and image. Current-tree and history scans found no sensitive filename or matching private secret; only the deliberately fake Flomo URL appears in test text. Launcher and landscape splash were visually checked as original clock shapes. All 26 PNGs have no PNG metadata chunks and byte-for-byte regenerate from the committed drawing script (`py -3 shells/scripts/verify-brand-assets.py` passed on 2026-10-23). Historical prose and code still need final editorial review.
@@ -20,7 +20,7 @@ Status: source-only preview published at [`LuluCJJ/time-ledger`](https://github.
 - [x] Verify the committed Gradle 8.14.3 wrapper JAR against the checksum published by Gradle: both SHA-256 values are `7d3a4ac4de1c32b59bc6a4eb8ecb8e612ccd0cf1ae1e99f66902da64df296172`.
 - [x] The owner confirmed `LuluCJJ/time-ledger` for public source; the repository was created. Its current branch starts from a clean snapshot and contains only GitHub private author/committer email metadata. Earlier detached GitHub commit views may remain accessible after rewriting history; removal is a separate GitHub Support matter.
 
-A local review-only source archive contained 138 entries, including root `LICENSE`, with no APK or private data directory. It was used to inspect the contents before the public snapshot; it is not an installable release.
+The repository tracks source, documents and generated original icons; no APK, private data directory or signing key is tracked. Older local review archives are snapshots of earlier commits, not installable releases or evidence for the current branch.
 
 ## Android trial-to-release path
 
