@@ -1,0 +1,32 @@
+// 只读核对两套转换器的全字段结果；控制台只打印汇总，不打印私人内容。
+import {spawnSync} from 'node:child_process';
+import {readFileSync} from 'node:fs';
+import {createRequire} from 'node:module';
+import {fileURLToPath} from 'node:url';
+import path from 'node:path';
+import {parseLegacyExcel} from './legacy-excel.mjs';
+import {initialCategories} from './model.mjs';
+import {parseImport} from './portability.mjs';
+
+const [source,python='python']=process.argv.slice(2);
+if(!source)throw Error('Usage: node excel-import-smoke.mjs <source.xls> [python-executable]');
+const root=path.dirname(fileURLToPath(import.meta.url));
+globalThis.XLSX=createRequire(import.meta.url)(path.join(root,'vendor','xlsx.full.min.js'));
+const raw=readFileSync(source);
+const buffer=raw.buffer.slice(raw.byteOffset,raw.byteOffset+raw.byteLength);
+const {payload,report}=await parseLegacyExcel(buffer,path.basename(source));
+const imported=parseImport(JSON.stringify(payload),initialCategories);
+const code='import importlib.util,json,sys; from pathlib import Path; s=importlib.util.spec_from_file_location("converter",sys.argv[1]); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(json.dumps(m.convert(Path(sys.argv[2])),ensure_ascii=True))';
+const child=spawnSync(python,['-c',code,path.join(root,'legacy_xls_converter.py'),source],{encoding:'utf8',maxBuffer:50*1024*1024,env:{...process.env,PYTHONIOENCODING:'utf-8'}});
+if(child.status!==0)throw Error(child.stderr.trim()||`Reference converter exit ${child.status}`);
+const reference=JSON.parse(child.stdout);
+if(imported.events.length!==reference.events.length||imported.logs.length!==reference.logs.length)throw Error('事件或日志数量与参考转换器不一致');
+const fields=['categoryId','start','end','note','legacyDuration','legacyEstimate','legacyTags','sourceRow','sourceCategoryName'];
+for(let i=0;i<imported.events.length;i++)for(const field of fields)if(imported.events[i][field]!==reference.events[i][field])throw Error(`事件第 ${i+1} 行的 ${field} 与参考转换器不一致`);
+for(let i=0;i<imported.logs.length;i++)for(const field of ['date','type','content','sourceRow'])if(imported.logs[i][field]!==reference.logs[i][field])throw Error(`日志第 ${i+1} 行的 ${field} 与参考转换器不一致`);
+const xlsx=globalThis.XLSX.write(globalThis.XLSX.read(buffer,{type:'array'}),{bookType:'xlsx',type:'array'});
+const roundtrip=(await parseLegacyExcel(xlsx,'memory-only.xlsx')).payload;
+if(roundtrip.events.length!==imported.events.length||roundtrip.logs.length!==imported.logs.length)throw Error('内存 XLSX 转换后数量不一致');
+for(let i=0;i<imported.events.length;i++)for(const field of fields)if(roundtrip.events[i][field]!==imported.events[i][field])throw Error(`XLSX 事件第 ${i+1} 行的 ${field} 不一致`);
+for(let i=0;i<imported.logs.length;i++)for(const field of ['date','type','content','sourceRow'])if(roundtrip.logs[i][field]!==imported.logs[i][field])throw Error(`XLSX 日志第 ${i+1} 行的 ${field} 不一致`);
+console.log(JSON.stringify({events:report.events,logs:report.logs,unknownCategories:report.unknownCategories.length,zeroDuration:report.zeroDuration,noteCount:report.noteCount,sha256:report.sha256,xlsAndXlsxAllFieldsMatch:true}));

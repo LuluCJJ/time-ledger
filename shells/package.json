@@ -1,0 +1,22 @@
+{
+  "name": "personal-time-ledger-shells",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Local-first time ledger for Android and desktop",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "web:prepare": "node scripts/prepare-web.mjs",
+    "desktop:dev": "npm run web:prepare && electron .",
+    "desktop:package": "npm run web:prepare && node scripts/prepare-desktop.mjs && electron-packager staging-desktop TimeLedger --platform=win32 --arch=x64 --out=dist --overwrite",
+    "android:add": "npm run web:prepare && cap add android",
+    "android:sync": "npm run web:prepare && cap sync android",
+    "android:debug-apk": "npm run android:sync && cd android && gradlew.bat assembleDebug"
+  },
+  "devDependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/cli": "8.5.3",
+    "@capacitor/core": "8.5.3",
+    "@electron/packager": "20.3.0",
+    "electron": "44.9.1"
+  }
+}

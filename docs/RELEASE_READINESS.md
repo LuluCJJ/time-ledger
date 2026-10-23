@@ -1,0 +1,42 @@
+# Release readiness
+
+Status: source-only preview published at [`LuluCJJ/time-ledger`](https://github.com/LuluCJJ/time-ledger) on 2026-10-23. No installable release exists.
+
+## Source candidate
+
+- [x] Separate repository with Chinese and English README, product principles, data boundary and third-party notice.
+- [x] One future source location declared in `PROJECT_GOVERNANCE.md`.
+- [x] Single local source preflight entry point: `node scripts/verify-source.mjs` runs web tests, tracked-file scan, history scan and diff formatting; passed on 2026-10-23. It intentionally does not assert real-phone or signing safety.
+- [ ] GitHub Actions source checks are configured for pushes and pull requests with full history, read-only token and Node 24. Verify the run on the clean public snapshot after publication.
+- [x] Automated model and portability checks: 27 passing on 2026-10-23.
+- [x] Repeatable tracked-tree sensitive-file and secret-pattern check: `node scripts/check-public-tree.mjs` (current tree only).
+- [x] Repeatable Git history check: `node scripts/check-history.mjs` found no forbidden private-data paths or sensitive-pattern text in the prepublication development history on 2026-10-23. Public history is prepared as a single clean source snapshot to omit private development metadata. This does not replace human review of product wording and images.
+- [x] Compare unique historical Wiki scripts: both changed smoke scripts only point to the renamed `legacy_xls_converter.py`; the old `xls_to_demo.py` and README remain in the private Wiki as historical evidence. No older directory was deleted.
+- [x] Remove Capacitor's unused sample unit/instrumented tests; the latter asserted the scaffold package name rather than this app. `assembleDebug assembleRelease` still succeeded afterward.
+- [ ] Complete manual review of every tracked file and image. Current-tree and history scans found no sensitive filename or matching private secret; only the deliberately fake Flomo URL appears in test text. Launcher and landscape splash were visually checked as original clock shapes. All 26 PNGs have no PNG metadata chunks and byte-for-byte regenerate from the committed drawing script (`py -3 shells/scripts/verify-brand-assets.py` passed on 2026-10-23). Historical prose and code still need final editorial review.
+- [x] Select Apache-2.0 for original project code and documentation and add the full official text in root `LICENSE`. The redistributed SheetJS bundle exactly matches the official 0.20.3 standalone file by SHA-256; its own notice and attribution are in `THIRD_PARTY.md`.
+- [x] Check direct build/runtime package licenses from installed files and pinned versions; `THIRD_PARTY.md` now distinguishes source publication from later binary notice review.
+- [x] Verify the committed Gradle 8.14.3 wrapper JAR against the checksum published by Gradle: both SHA-256 values are `7d3a4ac4de1c32b59bc6a4eb8ecb8e612ccd0cf1ae1e99f66902da64df296172`.
+- [x] The owner confirmed `LuluCJJ/time-ledger` for public source; the repository was created. Its source branch is being replaced with a clean snapshot that omits private development metadata.
+
+A local review-only source archive contained 138 entries, including root `LICENSE`, with no APK or private data directory. It was used to inspect the contents before the public snapshot; it is not an installable release.
+
+## Android trial-to-release path
+
+- [ ] Confirm a complete backup file from the user's active phone and restore it in isolation.
+- [ ] Verify over-install of the latest candidate preserves records, categories and reviews; inspect export, small-screen data page and focus display on a phone.
+- [ ] Compare a fresh legacy XLS export with entries added to this app before any replacement import.
+- [ ] Choose versionCode/versionName, release signing and an upgrade path from the existing debug-signed installation. The active debug package uses an Android Debug certificate; a separately signed public package cannot over-install it. Preserve a verified full backup and rehearse transfer before changing signing identity or package ID.
+- [x] Build the release configuration separately: `assembleRelease` succeeded on 2026-10-23 and produced `app-release-unsigned.apk` (3,646,347 bytes). Signature verification correctly rejects this unsigned artifact. Signing, installation and real-phone verification remain pending; do not distribute it.
+
+The latest local trial build is v28, SHA-256 `DD251ACB46EEA1473B4B7D4853BDE3FCC91EFE43199E96D2308C4AAAC375F22C`. Its embedded HTML references web version 38 and includes the split category picker; its embedded JavaScript includes the trailing-gap action. APK signature verification passed, and its certificate SHA-256 matches v27. Actual phone interaction and data preservation still require a phone check. No APK is included in this source repository.
+
+The Windows x64 desktop package rebuilt successfully on 2026-10-23 and contains `TimeLedger.exe`. A hidden smoke launch exited with code 0 and reported title `时间账`, a populated timeline, and `ledger://bundle` origin. The package is local build output, not a public release; data portability on a separate Windows installation remains unverified. Web tests: 27 passing.
+
+Source publication and APK publication may be separate milestones. If source is published first, describe the remaining Android verification plainly in `STATUS.md` and the release notes.
+
+## Decisions for the owner
+
+1. Public name and GitHub account: `LuluCJJ/time-ledger` selected.
+2. License: Apache-2.0 selected on 2026-10-23.
+3. First scope: source-only preview selected, then a signed APK after real-phone backup and upgrade checks.
