@@ -4,29 +4,29 @@ import {parseLegacyExcel} from './legacy-excel.mjs?v=17';
 import {whiteLabelColor} from './color.mjs?v=19';
 import {periodInsights} from './insights.mjs?v=19';
 import {flomoDraftUrl,eventFlomoText,reviewFlomoText,validateFlomoWebhook,flomoPayload,flomoAccepted} from './flomo.mjs?v=23';
+import {loadLocalState} from './storage.mjs?v=1';
 const KEY='personal-time-ledger-demo-v1';
 const FLOMO_KEY='personal-time-ledger-flomo-webhook-v1';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let state;
-try { state=JSON.parse(localStorage.getItem(KEY))||seed(); if(!Array.isArray(state.events)||!Array.isArray(state.categories)) throw Error('invalid'); } catch { state=seed(); }
 function normalizeState(raw){const version=Number(raw.schemaVersion)||0;
   if(version<4)for(const c of raw.categories||[]){const old={daily_eat:'#a0a4a2',daily_wash:'#a0a4a2',daily_travel:'#a0a4a2',daily_sleep:'#819080'}[c.id];if(old&&c.color?.toLowerCase()===old)c.color={daily_eat:'#c88964',daily_wash:'#78b7c3',daily_travel:'#859bd1',daily_sleep:'#7789b7'}[c.id]}
   if(version<6)for(const c of raw.categories||[]){const previous={daily:'#77a555',daily_eat:'#c88964',daily_house:'#77a555',daily_wash:'#78b7c3',daily_travel:'#859bd1',daily_sleep:'#7789b7',other:'#aa6868',other_social:'#aa6868'}[c.id];const updated={daily:'#929995',daily_eat:'#b7b9b2',daily_house:'#abb2aa',daily_wash:'#c4cac7',daily_travel:'#969e9c',daily_sleep:'#a8afad',other:'#8d817c',other_social:'#a39792'}[c.id];if(previous&&c.color?.toLowerCase()===previous)c.color=updated}
   raw.categories=initializeCategories(raw.categories,version<2);
   if(version<3){const old=raw.categories.find(c=>c.id==='growth_duolingo');if(old?.name==='多邻国')old.name='多领国'}
   raw.schemaVersion=6;raw.logs??=[];if(!raw.reviews||typeof raw.reviews!=='object'||Array.isArray(raw.reviews))raw.reviews={};raw.source??={type:'demo'};return raw}
-state=normalizeState(state);
+let {state,loadFailure,storedSnapshot}=loadLocalState(localStorage,KEY,seed,normalizeState);
 let view='today',editId=null,switchFrom=null,pending=null,pendingImport=null,pendingMerge=null,categoryEditId=null,splitId=null,undoEvents=null,undoLabel='',selectedDay=dayKey(Date.now()),weekZoom=1;
 let flomoSending=false,flomoSent=false;
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(error){alert('本机保存失败，请检查应用存储权限')}};
+const save=()=>{if(loadFailure){alert('本机记录读取失败，已暂停保存以保护原始数据');return false}try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(error){alert('本机保存失败，请检查应用存储权限');return false}};
 const rememberEvents=label=>{undoEvents=structuredClone(state.events);undoLabel=label};
 function undoLast(){if(!undoEvents)return;state.events=undoEvents;undoEvents=null;undoLabel='';save();render()}
 const category=id=>state.categories.find(c=>c.id===id)||{name:'未知分类',color:'#888'};
 const shortDuration=ms=>{const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s/60)%60,sec=s%60;return `${h?`${h}小时`:''}${m||h?`${m}分`:''}${sec&&!h?`${sec}秒`:''}${!h&&!m&&!sec?'0秒':''}`};
 const tint=(hex,amount)=>{const rgb=/^#([0-9a-f]{6})$/i.exec(hex||'');if(!rgb)return '#f2f4f6';return '#'+rgb[1].match(/../g).map(x=>Math.round(parseInt(x,16)*(1-amount)+255*amount).toString(16).padStart(2,'0')).join('')};
 const name=id=>{const c=category(id),p=c.parentId?category(c.parentId):null;return p?`${p.name} / ${c.name}`:c.name};
-function render(){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('selected',b.dataset.view===view));
+function render(){if(loadFailure){document.querySelectorAll('nav button').forEach(b=>b.disabled=true);$('#main').innerHTML=`<section class="card data-section"><h2>本机记录暂时无法读取</h2><p>为避免覆盖原始记录，已暂停编辑和保存。请先保留原始数据副本，再检查或恢复；不要清除应用数据。</p>${storedSnapshot?'<button class="primary" data-action="export-raw">保存原始数据副本</button>':'<p>本机存储目前无法读取，请不要在此设备新增记录。</p>'}<p>原始副本可能包含私人记录，不要上传到公开仓库。</p><p id="exportStatus" role="status" aria-live="polite"></p></section>`;return}
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('selected',b.dataset.view===view));
   $('#main').innerHTML=view==='today'?today():view==='week'?period(7):view==='month'?period(30):view==='categories'?categories():dataPage();
 }
 const midnight=key=>new Date(`${key}T00:00:00`).getTime();
@@ -248,6 +248,7 @@ async function sendFlomo(){if(flomoSending||flomoSent)return;const button=$('#se
   finally{flomoSending=false;button.disabled=flomoSent}}
 function saveFlomoWebhook(){try{const value=validateFlomoWebhook($('#flomoWebhook').value);localStorage.setItem(FLOMO_KEY,value);$('#flomoWebhook').value='';$('#flomoSettingStatus').textContent='接入地址已保存在这台设备';}catch(error){$('#flomoSettingStatus').textContent=error.message}}
 document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;
+  if(loadFailure){if(b.dataset.action==='export-raw'&&storedSnapshot)exportFile(`时间账-原始数据-${exportStamp()}.txt`,storedSnapshot,'text/plain;charset=utf-8',b);return}
   if(b.dataset.pickRoot){categoryPicker(b.dataset.pickRoot,b.dataset.picker);return}
   if(b.dataset.pickCategory){(b.dataset.picker==='split'?$('#splitCategory'):$('#eventForm').elements.categoryId).value=b.dataset.pickCategory;categoryPicker(categoryRoot(b.dataset.pickCategory),b.dataset.picker);return}
   if(b.dataset.fillStart){openEvent(null,false,{start:Number(b.dataset.fillStart),end:Number(b.dataset.fillEnd)});return}
@@ -306,5 +307,5 @@ $('#openFlomoDraft').onclick=async()=>{try{await openFlomoDraft($('#flomoContent
 $('#sendFlomo').onclick=sendFlomo;
 $('#flomoContent').oninput=()=>{flomoSent=false;$('#flomoResult').textContent='';$('#sendFlomo').disabled=!localStorage.getItem(FLOMO_KEY)};
 $('#confirmImport').onclick=()=>{if(!pendingImport)return;try{localStorage.setItem(KEY,JSON.stringify(pendingImport));state=pendingImport;undoEvents=null;undoLabel='';pendingImport=null;$('#importPreview').close();view='data';render()}catch(error){$('#importError').textContent=`本地保存失败：${error.message}`}};
-setInterval(()=>{if(view==='today'){const active=state.events.find(e=>e.end===null),el=$('#elapsed');if(active&&el)el.textContent=duration(Date.now()-active.start,true)}renderClock()},1000);
+setInterval(()=>{if(loadFailure)return;if(view==='today'){const active=state.events.find(e=>e.end===null),el=$('#elapsed');if(active&&el)el.textContent=duration(Date.now()-active.start,true)}renderClock()},1000);
 render();
