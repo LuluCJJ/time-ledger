@@ -20,3 +20,9 @@ jobs:
           node-version: 24
           package-manager-cache: false
       - run: node scripts/verify-source.mjs
+      - name: Install locked build dependencies
+        run: npm ci --ignore-scripts
+        working-directory: shells
+      - name: Audit locked build dependencies
+        run: npm audit --audit-level=moderate
+        working-directory: shells
