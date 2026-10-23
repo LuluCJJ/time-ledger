@@ -4,7 +4,7 @@ import {parseLegacyExcel} from './legacy-excel.mjs?v=17';
 import {whiteLabelColor} from './color.mjs?v=19';
 import {periodInsights} from './insights.mjs?v=19';
 import {flomoDraftUrl,eventFlomoText,reviewFlomoText,validateFlomoWebhook,flomoPayload,flomoAccepted} from './flomo.mjs?v=23';
-import {loadLocalState} from './storage.mjs?v=1';
+import {loadLocalState,persistLocalState} from './storage.mjs?v=2';
 const KEY='personal-time-ledger-demo-v1';
 const FLOMO_KEY='personal-time-ledger-flomo-webhook-v1';
 const $=s=>document.querySelector(s);
@@ -16,9 +16,10 @@ function normalizeState(raw){const version=Number(raw.schemaVersion)||0;
   if(version<3){const old=raw.categories.find(c=>c.id==='growth_duolingo');if(old?.name==='多邻国')old.name='多领国'}
   raw.schemaVersion=6;raw.logs??=[];if(!raw.reviews||typeof raw.reviews!=='object'||Array.isArray(raw.reviews))raw.reviews={};raw.source??={type:'demo'};return raw}
 let {state,loadFailure,storedSnapshot}=loadLocalState(localStorage,KEY,seed,normalizeState);
+let lastSavedJson=JSON.stringify(state);
 let view='today',editId=null,switchFrom=null,pending=null,pendingImport=null,pendingMerge=null,categoryEditId=null,splitId=null,undoEvents=null,undoLabel='',selectedDay=dayKey(Date.now()),weekZoom=1;
 let flomoSending=false,flomoSent=false;
-const save=()=>{if(loadFailure){alert('本机记录读取失败，已暂停保存以保护原始数据');return false}try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(error){alert('本机保存失败，请检查应用存储权限');return false}};
+const save=()=>{if(loadFailure){alert('本机记录读取失败，已暂停保存以保护原始数据');return false}const result=persistLocalState(localStorage,KEY,state,lastSavedJson);state=result.state;lastSavedJson=result.lastSavedJson;if(!result.saved){undoEvents=null;undoLabel='';alert('本机保存失败，这次修改未生效。请检查可用空间，并先导出完整备份。')}return result.saved};
 const rememberEvents=label=>{undoEvents=structuredClone(state.events);undoLabel=label};
 function undoLast(){if(!undoEvents)return;state.events=undoEvents;undoEvents=null;undoLabel='';save();render()}
 const category=id=>state.categories.find(c=>c.id===id)||{name:'未知分类',color:'#888'};
@@ -176,7 +177,7 @@ function submitEvent(ev){ev.preventDefault();const f=ev.currentTarget;
     const draft={id:editId??crypto.randomUUID(),categoryId:f.elements.categoryId.value,start,end,note:f.elements.note.value.trim()};
     if(!state.categories.some(c=>c.id===draft.categoryId))throw Error('请选择分类');
     pending=switchFrom?proposeSwitch(state.events,draft):propose(state.events,draft);const changes=pending.changes;
-    if(!changes.length){rememberEvents('保存了记录');state.events=pending.events;pending=null;save();$('#editor').close();render();return}
+    if(!changes.length){rememberEvents('保存了记录');state.events=pending.events;if(!save())return;pending=null;$('#editor').close();render();return}
     $('#previewText').innerHTML=`<p><strong>${esc(name(draft.categoryId))}</strong><br>${esc(localInput(start,true).replace('T',' '))} → ${end?esc(localInput(end,true).replace('T',' ')):'进行中'}</p>`+
       (changes.length?`<p>相邻记录也会调整：</p><ul>${changes.map(c=>`<li>${esc(name(state.events.find(e=>e.id===c.id).categoryId))}的${c.field==='start'?'起点':'终点'}：${c.before===null?'进行中':esc(localInput(c.before,true).replace('T',' '))} → ${esc(localInput(c.after,true).replace('T',' '))}</li>`).join('')}</ul>`:'');
     $('#editor').close();$('#preview').showModal();
@@ -192,7 +193,7 @@ function updateSplitSummary(){const e=state.events.find(x=>x.id===splitId),at=ne
 function submitSplit(ev){ev.preventDefault();try{const at=new Date($('#splitAt').value).getTime(),result=proposeSplit(state.events,splitId,at,crypto.randomUUID());
     const nextCategory=$('#splitCategory').value;if(!state.categories.some(c=>c.id===nextCategory))throw Error('请选择后一段的分类');
     result.second.categoryId=nextCategory;result.second.note=$('#splitNote').value.trim();result.second.sourceCategoryName=undefined;
-    rememberEvents('从中间切换了活动');state.events=result.events;save();$('#splitDialog').close();splitId=null;render()}catch(error){$('#splitError').textContent=error.message}}
+    rememberEvents('从中间切换了活动');state.events=result.events;if(!save())return;$('#splitDialog').close();splitId=null;render()}catch(error){$('#splitError').textContent=error.message}}
 function openMerge(id){try{pendingMerge=proposeMergeSplit(state.events,id);const {first,second}=pendingMerge;
     $('#mergeSummary').textContent=`${name(first.categoryId)}：${duration(first.end-first.start,true)} ＋ ${duration(second.end-second.start,true)} → ${duration(second.end-first.start,true)}。备注保持原样。`;
     $('#mergeDialog').showModal()}catch(error){alert(error.message)}}
@@ -234,9 +235,9 @@ function addCategory(ev){ev.preventDefault();const f=ev.currentTarget,n=f.elemen
   if(!n){$('#categoryError').textContent='请输入分类名称';return}
   if(state.categories.some(c=>c.id!==categoryEditId&&c.name===n&&c.parentId===parentId)){$('#categoryError').textContent='同一层级已经有这个名称';return}
   const c=state.categories.find(x=>x.id===categoryEditId);if(c){c.name=n;c.color=f.elements.color.value;c.parentId=parentId}else state.categories.push({id:crypto.randomUUID(),name:n,color:f.elements.color.value,parentId,archived:false});
-  save();$('#categoryDialog').close();render()}
-function savePeriodReview(){const area=$('#periodReview'),key=area?.dataset.reviewKey;if(!key)return null;const note=area.value.trim();if(note)state.reviews[key]={note,updatedAt:new Date().toISOString()};else delete state.reviews[key];save();$('#reviewStatus').textContent=note?'已保存':'已清空';return {key,note}}
-function saveDayReview(key){const plan=$('#dayPlan').value.trim(),note=$('#daySummary').value.trim(),reviewKey=`day:${key}`;if(plan||note)state.reviews[reviewKey]={plan,note,updatedAt:new Date().toISOString()};else delete state.reviews[reviewKey];save();$('#dayReviewStatus').textContent=plan||note?'已保存':'已清空';return {plan,note}}
+  if(!save())return;$('#categoryDialog').close();render()}
+function savePeriodReview(){const area=$('#periodReview'),key=area?.dataset.reviewKey;if(!key)return null;const note=area.value.trim();if(note)state.reviews[key]={note,updatedAt:new Date().toISOString()};else delete state.reviews[key];if(!save()){$('#reviewStatus').textContent='保存失败';return null}$('#reviewStatus').textContent=note?'已保存':'已清空';return {key,note}}
+function saveDayReview(key){const plan=$('#dayPlan').value.trim(),note=$('#daySummary').value.trim(),reviewKey=`day:${key}`;if(plan||note)state.reviews[reviewKey]={plan,note,updatedAt:new Date().toISOString()};else delete state.reviews[reviewKey];if(!save()){$('#dayReviewStatus').textContent='保存失败';return null}$('#dayReviewStatus').textContent=plan||note?'已保存':'已清空';return {plan,note}}
 async function openFlomoDraft(content){const url=flomoDraftUrl(content);if(window.Capacitor?.isNativePlatform?.()){window.location.href=url;return}if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(content);alert('内容已复制。请打开 Flomo 粘贴并确认保存。');return}window.location.href=url}
 function handoffFlomo(button){try{let content;if(button.dataset.flomoEvent){const e=state.events.find(x=>x.id===button.dataset.flomoEvent);if(!e)throw Error('记录已不存在');content=eventFlomoText({date:dayKey(e.start),start:time(e.start),end:e.end===null?'进行中':time(e.end),category:name(e.categoryId),note:e.note})}else{const kind=button.dataset.flomoReview,key=button.dataset.reviewKey??`day:${button.dataset.reviewDay}`;let note;if(kind==='day')note=saveDayReview(button.dataset.reviewDay).note;else note=savePeriodReview()?.note;const start=key.split(':')[1],period=kind==='week'?`${start} 至 ${addDays(start,6)}`:kind==='month'?start.slice(0,7):start;content=reviewFlomoText({kind,period,content:note})}flomoPayload(content);flomoSent=false;$('#flomoContent').value=content;$('#flomoResult').textContent='';$('#sendFlomo').disabled=!localStorage.getItem(FLOMO_KEY);$('#flomoDialog').showModal()}catch(error){alert(`无法准备 Flomo 内容：${error.message}`)}}
 async function sendFlomo(){if(flomoSending||flomoSent)return;const button=$('#sendFlomo'),result=$('#flomoResult');try{const url=validateFlomoWebhook(localStorage.getItem(FLOMO_KEY)),data=flomoPayload($('#flomoContent').value);flomoSending=true;button.disabled=true;result.textContent='正在发送…';let response;
@@ -286,9 +287,9 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b
 document.addEventListener('change',ev=>{if(ev.target.id==='pickDay'&&ev.target.value){selectedDay=ev.target.value;render()}if(ev.target.id==='importFile')prepareImport(ev.target.files[0])});
 $('#eventForm').onsubmit=submitEvent;$('#eventForm').elements.running.onchange=syncRunning;
 $('#splitForm').onsubmit=submitSplit;$('#splitAt').oninput=updateSplitSummary;$('#cancelSplit').onclick=()=>{$('#splitDialog').close();splitId=null};
-$('#cancelMerge').onclick=()=>{pendingMerge=null;$('#mergeDialog').close()};$('#confirmMerge').onclick=()=>{if(!pendingMerge)return;rememberEvents('合并了拆分段');state.events=pendingMerge.events;pendingMerge=null;save();$('#mergeDialog').close();render()};
+$('#cancelMerge').onclick=()=>{pendingMerge=null;$('#mergeDialog').close()};$('#confirmMerge').onclick=()=>{if(!pendingMerge)return;rememberEvents('合并了拆分段');state.events=pendingMerge.events;if(!save())return;pendingMerge=null;$('#mergeDialog').close();render()};
 $('#cancelEdit').onclick=()=>$('#editor').close();$('#cancelPreview').onclick=()=>{$('#preview').close();$('#editor').showModal()};
-$('#confirmPreview').onclick=()=>{rememberEvents('保存了记录');state.events=pending.events;save();pending=null;$('#preview').close();render()};
+$('#confirmPreview').onclick=()=>{rememberEvents('保存了记录');state.events=pending.events;if(!save())return;pending=null;$('#preview').close();render()};
 $('#categoryForm').onsubmit=addCategory;$('#cancelCategory').onclick=()=>$('#categoryDialog').close();
 $('#closeClock').onclick=()=>$('#clock').close();$('#saveEstimate').onclick=saveEstimate;
 $('#toggleClockAwake').onclick=()=>{clockAwake=!clockAwake;updateClockDisplayButtons();syncClockDisplay()};
@@ -306,6 +307,6 @@ $('#cancelFlomo').onclick=()=>$('#flomoDialog').close();
 $('#openFlomoDraft').onclick=async()=>{try{await openFlomoDraft($('#flomoContent').value)}catch(error){$('#flomoResult').textContent=`无法打开草稿：${error.message}`}};
 $('#sendFlomo').onclick=sendFlomo;
 $('#flomoContent').oninput=()=>{flomoSent=false;$('#flomoResult').textContent='';$('#sendFlomo').disabled=!localStorage.getItem(FLOMO_KEY)};
-$('#confirmImport').onclick=()=>{if(!pendingImport)return;try{localStorage.setItem(KEY,JSON.stringify(pendingImport));state=pendingImport;undoEvents=null;undoLabel='';pendingImport=null;$('#importPreview').close();view='data';render()}catch(error){$('#importError').textContent=`本地保存失败：${error.message}`}};
+$('#confirmImport').onclick=()=>{if(!pendingImport)return;try{const next=JSON.stringify(pendingImport);localStorage.setItem(KEY,next);state=pendingImport;lastSavedJson=next;undoEvents=null;undoLabel='';pendingImport=null;$('#importPreview').close();view='data';render()}catch(error){$('#importError').textContent=`本地保存失败：${error.message}`}};
 setInterval(()=>{if(loadFailure)return;if(view==='today'){const active=state.events.find(e=>e.end===null),el=$('#elapsed');if(active&&el)el.textContent=duration(Date.now()-active.start,true)}renderClock()},1000);
 render();

@@ -9,3 +9,13 @@ export function loadLocalState(storage,key,makeEmpty,normalize){
     return {state:makeEmpty(),storedSnapshot:raw,loadFailure:error};
   }
 }
+
+export function persistLocalState(storage,key,state,lastSavedJson){
+  try{
+    const next=JSON.stringify(state);
+    storage.setItem(key,next);
+    return {saved:true,state,lastSavedJson:next};
+  }catch(error){
+    return {saved:false,state:JSON.parse(lastSavedJson),lastSavedJson,error};
+  }
+}
