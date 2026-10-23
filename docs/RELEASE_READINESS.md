@@ -7,7 +7,7 @@ Status: source-only preview published at [`LuluCJJ/time-ledger`](https://github.
 - [x] Separate repository with Chinese and English README, product principles, data boundary and third-party notice.
 - [x] One future source location declared in `PROJECT_GOVERNANCE.md`.
 - [x] Single local source preflight entry point: `node scripts/verify-source.mjs` runs web tests, tracked-file scan, history scan and diff formatting; passed on 2026-10-23. It intentionally does not assert real-phone or signing safety.
-- [ ] GitHub Actions source checks are configured for pushes and pull requests with full history, read-only token and Node 24. Verify the run on the clean public snapshot after publication.
+- [x] GitHub Actions source checks run on pushes and pull requests with full history, read-only token and Node 24. The clean public snapshot and its follow-up check both passed: [source check run](https://github.com/LuluCJJ/time-ledger/actions/runs/39917189683). Recheck each later release commit.
 - [x] Automated model and portability checks: 27 passing on 2026-10-23.
 - [x] Repeatable tracked-tree sensitive-file and secret-pattern check: `node scripts/check-public-tree.mjs` (current tree only).
 - [x] Repeatable Git history check: `node scripts/check-history.mjs` found no forbidden private-data paths or sensitive-pattern text in the prepublication development history on 2026-10-23. Public history is prepared as a single clean source snapshot to omit private development metadata. This does not replace human review of product wording and images.
@@ -17,7 +17,7 @@ Status: source-only preview published at [`LuluCJJ/time-ledger`](https://github.
 - [x] Select Apache-2.0 for original project code and documentation and add the full official text in root `LICENSE`. The redistributed SheetJS bundle exactly matches the official 0.20.3 standalone file by SHA-256; its own notice and attribution are in `THIRD_PARTY.md`.
 - [x] Check direct build/runtime package licenses from installed files and pinned versions; `THIRD_PARTY.md` now distinguishes source publication from later binary notice review.
 - [x] Verify the committed Gradle 8.14.3 wrapper JAR against the checksum published by Gradle: both SHA-256 values are `7d3a4ac4de1c32b59bc6a4eb8ecb8e612ccd0cf1ae1e99f66902da64df296172`.
-- [x] The owner confirmed `LuluCJJ/time-ledger` for public source; the repository was created. Its source branch is being replaced with a clean snapshot that omits private development metadata.
+- [x] The owner confirmed `LuluCJJ/time-ledger` for public source; the repository was created. Its current branch starts from a clean snapshot and contains only GitHub private author/committer email metadata. Earlier detached GitHub commit views may remain accessible after rewriting history; removal is a separate GitHub Support matter.
 
 A local review-only source archive contained 138 entries, including root `LICENSE`, with no APK or private data directory. It was used to inspect the contents before the public snapshot; it is not an installable release.
 
