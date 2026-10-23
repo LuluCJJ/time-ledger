@@ -10,7 +10,10 @@ import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.PluginMethod;
 import java.io.OutputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
 
 @CapacitorPlugin(name = "LedgerExport")
 public class LedgerExportPlugin extends Plugin {
@@ -40,18 +43,36 @@ public class LedgerExportPlugin extends Plugin {
             return;
         }
         Uri uri = result.getData().getData();
+        byte[] bytes = call.getString("content").getBytes(StandardCharsets.UTF_8);
         try (OutputStream stream = getContext().getContentResolver().openOutputStream(uri, "wt")) {
             if (stream == null) throw new IllegalStateException("无法打开所选位置");
-            byte[] bytes = call.getString("content").getBytes(StandardCharsets.UTF_8);
             stream.write(bytes);
             stream.flush();
-            JSObject response = new JSObject();
-            response.put("saved", true);
-            response.put("name", call.getString("name"));
-            response.put("bytes", bytes.length);
-            call.resolve(response);
         } catch (Exception error) {
             call.reject("写入文件失败：" + error.getMessage());
+            return;
         }
+        JSObject response = new JSObject();
+        response.put("saved", true);
+        response.put("name", call.getString("name"));
+        response.put("bytes", bytes.length);
+        try (InputStream stream = getContext().getContentResolver().openInputStream(uri)) {
+            if (stream == null) throw new IllegalStateException("无法重新打开文件");
+            MessageDigest expected = MessageDigest.getInstance("SHA-256");
+            MessageDigest actual = MessageDigest.getInstance("SHA-256");
+            expected.update(bytes);
+            byte[] buffer = new byte[8192];
+            long readBytes = 0;
+            int count;
+            while ((count = stream.read(buffer)) != -1) {
+                actual.update(buffer, 0, count);
+                readBytes += count;
+            }
+            response.put("verified", readBytes == bytes.length && Arrays.equals(expected.digest(), actual.digest()));
+        } catch (Exception error) {
+            response.put("verified", false);
+            response.put("warning", "文件已写入，但无法从所选位置读回校验：" + error.getMessage());
+        }
+        call.resolve(response);
     }
 }
