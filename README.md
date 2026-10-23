@@ -1,6 +1,6 @@
 # 时间账 · Time Ledger
 
-[English](README.en.md) · [设计原则](docs/PRODUCT.md) · [数据与隐私](docs/DATA.md) · [参与贡献](CONTRIBUTING.md) · [项目与发布边界](docs/PROJECT_GOVERNANCE.md) · [第三方组件](docs/THIRD_PARTY.md)
+[English](README.en.md) · [设计原则](docs/PRODUCT.md) · [数据与隐私](docs/DATA.md) · [参与贡献](CONTRIBUTING.md) · [项目与发布边界](docs/PROJECT_GOVERNANCE.md) · [Android 发布](docs/ANDROID_RELEASE.md) · [第三方组件](docs/THIRD_PARTY.md)
 
 **把时间记清楚，才有机会重新选择怎么生活。** 时间账是一款以手机本地记录为主的个人时间账本。开始一段活动时记下起点，切换时结清上一段；之后可以修正时间、分类和备注，并按日、周、月回看生活的实际构成。
 

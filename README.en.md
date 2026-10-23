@@ -1,6 +1,6 @@
 # Time Ledger · 时间账
 
-[简体中文](README.md) · [Product principles](docs/PRODUCT.md) · [Data and privacy](docs/DATA.md) · [Contributing](CONTRIBUTING.md) · [Project and release boundaries](docs/PROJECT_GOVERNANCE.md) · [Third-party components](docs/THIRD_PARTY.md)
+[简体中文](README.md) · [Product principles](docs/PRODUCT.md) · [Data and privacy](docs/DATA.md) · [Contributing](CONTRIBUTING.md) · [Project and release boundaries](docs/PROJECT_GOVERNANCE.md) · [Android release](docs/ANDROID_RELEASE.md) · [Third-party components](docs/THIRD_PARTY.md)
 
 **See where your time went, then choose what to do next.** Time Ledger is a local-first personal time log. Start an activity, close it when you switch, correct the actual times later, and review the shape of your days, weeks, and months.
 

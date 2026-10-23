@@ -1,5 +1,14 @@
 apply plugin: 'com.android.application'
 
+def releaseSigning = [
+    keystore: System.getenv('TIME_LEDGER_KEYSTORE'),
+    storePassword: System.getenv('TIME_LEDGER_STORE_PASSWORD'),
+    keyAlias: System.getenv('TIME_LEDGER_KEY_ALIAS'),
+    keyPassword: System.getenv('TIME_LEDGER_KEY_PASSWORD')
+]
+def suppliedSigningValues = releaseSigning.values().count { it != null && !it.isBlank() }
+def releaseSigningReady = suppliedSigningValues == releaseSigning.size()
+
 android {
     namespace = "app.personal.timeledger"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,12 +25,27 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (releaseSigningReady) {
+                storeFile file(releaseSigning.keystore)
+                storePassword releaseSigning.storePassword
+                keyAlias releaseSigning.keyAlias
+                keyPassword releaseSigning.keyPassword
+            }
+        }
+    }
     buildTypes {
         release {
+            if (releaseSigningReady) signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+if (suppliedSigningValues > 0 && !releaseSigningReady) {
+    throw new GradleException('Release signing requires all four TIME_LEDGER_* environment variables')
 }
 
 repositories {
