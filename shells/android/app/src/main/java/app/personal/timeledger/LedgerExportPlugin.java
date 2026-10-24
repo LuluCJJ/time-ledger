@@ -7,6 +7,8 @@ import android.os.ParcelFileDescriptor;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.DocumentsContract;
+import android.util.Base64;
 import android.content.ContentValues;
 import android.content.ContentResolver;
 import com.getcapacitor.JSObject;
@@ -35,25 +37,33 @@ public class LedgerExportPlugin extends Plugin {
     public void saveFile(PluginCall call) {
         String name = call.getString("name");
         String content = call.getString("content");
+        String base64 = call.getString("base64");
         String mimeType = call.getString("mimeType", "application/octet-stream");
-        if (name == null || name.isEmpty() || name.contains("/") || name.contains("\\") || content == null) {
+        if (name == null || name.isEmpty() || name.contains("/") || name.contains("\\") || (content == null) == (base64 == null)) {
             call.reject("导出文件参数无效");
             return;
         }
-        if (content.isEmpty()) {
+        byte[] bytes;
+        try {
+            bytes = base64 == null ? content.getBytes(StandardCharsets.UTF_8) : Base64.decode(base64, Base64.DEFAULT);
+        } catch (IllegalArgumentException error) {
+            call.reject("导出表格内容无效");
+            return;
+        }
+        if (bytes.length == 0) {
             call.reject("导出内容为空；没有生成有效备份");
             return;
         }
         // On Android 10+, write into Downloads without opening another Activity.
         // This also avoids device-specific crashes while returning from the file picker.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            saveToDownloads(call, name, mimeType, content.getBytes(StandardCharsets.UTF_8));
+            saveToDownloads(call, name, mimeType, bytes);
             return;
         }
         // Stage a private copy before DocumentsUI opens. Some phones recreate the
         // Activity while the picker is visible and the resumed PluginCall loses options.
         try (FileOutputStream staged = new FileOutputStream(pendingFile())) {
-            staged.write(content.getBytes(StandardCharsets.UTF_8));
+            staged.write(bytes);
             staged.getFD().sync();
         } catch (Exception error) {
             call.reject("无法准备导出数据：" + error.getMessage());
@@ -64,6 +74,23 @@ public class LedgerExportPlugin extends Plugin {
         intent.setType(mimeType);
         intent.putExtra(Intent.EXTRA_TITLE, name);
         startActivityForResult(call, intent, "onFileChosen");
+    }
+
+    @PluginMethod
+    public void openExports(PluginCall call) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Uri folder = DocumentsContract.buildDocumentUri("com.android.externalstorage.documents", "primary:Download/TimeLedger");
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, folder);
+        }
+        try {
+            getActivity().startActivity(intent);
+            call.resolve();
+        } catch (Exception error) {
+            call.reject("无法打开系统文件界面：" + error.getMessage());
+        }
     }
 
     private void saveToDownloads(PluginCall call, String name, String mimeType, byte[] bytes) {

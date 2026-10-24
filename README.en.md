@@ -4,7 +4,7 @@
 
 **See where your time went, then choose what to do next.** Time Ledger is a local-first personal time log. Start an activity, close it when you switch, correct the actual times later, and review the shape of your days, weeks, and months.
 
-> **Current backup risk (2026-10-24):** A phone trial user found 0-byte full-backup JSON files. Over-installing v37 preserved existing records, but export still crashed. v38 saves directly to Android Downloads and awaits a test on that phone. Keep the installed app and its data. A filename or tapped export button does not prove a valid backup. Do not uninstall, clear data, or move to a differently signed package before restoring and checking a complete backup separately. See [current status](docs/STATUS.md) and the [data rescue procedure](docs/ANDROID_DATA_RESCUE.md).
+> **Current backup status (2026-10-24):** Earlier phone trials produced 0-byte JSON files and v37 still crashed on export. The user reports that v38 produced a nonempty JSON file; a phone screenshot shows the app's “saved and read-back verified” message. The file has not yet been restored in isolation. Keep the installed app and its data, and do not uninstall, clear data, or move to a differently signed package until a separate restore has been checked. See [current status](docs/STATUS.md) and the [data rescue procedure](docs/ANDROID_DATA_RESCUE.md).
 
 ## Origin
 
@@ -25,7 +25,7 @@ Time Ledger is not affiliated with the podcast or the existing app. Their produc
 - One hierarchical, color-coded category per record; daily timeline and weekly/monthly views.
 - A focus clock based on actual elapsed time, with an optional expected end; Android supports keep-awake, landscape, and immersive full screen.
 - Daily plans and summaries, category distributions, and written weekly/monthly reviews.
-- Import legacy `.xls` or compatible `.xlsx`; export a full JSON backup and readable CSV files.
+- Import legacy `.xls` or compatible `.xlsx`; export a readable five-sheet Excel workbook, a full JSON recovery backup, or CSV files.
 - Optionally hand off a note or review to Flomo. Direct sending requires a webhook configured locally by the user.
 
 Some behaviors still require device and migration validation. See [current status](docs/STATUS.md). A successful build alone does not prove that backup and restoration are safe.

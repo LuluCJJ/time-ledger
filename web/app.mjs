@@ -5,6 +5,7 @@ import {whiteLabelColor} from './color.mjs?v=19';
 import {periodInsights} from './insights.mjs?v=19';
 import {flomoDraftUrl,eventFlomoText,reviewFlomoText,validateFlomoWebhook,flomoPayload,flomoAccepted} from './flomo.mjs?v=23';
 import {loadLocalState,persistLocalState} from './storage.mjs?v=2';
+import {readableExcelBase64} from './excel-export.mjs?v=1';
 const KEY='personal-time-ledger-demo-v1';
 const FLOMO_KEY='personal-time-ledger-flomo-webhook-v1';
 const $=s=>document.querySelector(s);
@@ -131,22 +132,24 @@ function categories(){const roots=categoryRoots(),active=state.categories.filter
 }
 function dataPage(){const source=state.source?.type==='xls'?`旧 XLS：${esc(state.source.fileName||'文件名未知')}`:'本机记录';
   const logs=[...state.logs].slice(-10).reverse().map(x=>`<div class="row"><div><strong>${esc(x.date)} · ${esc(x.type)}</strong><p class="row-note">${esc(x.content)}</p></div></div>`).join('');
-  return `<div class="data-page"><section class="card data-section data-overview"><p class="eyebrow">数据管理</p><h2>记录由你保管</h2><p class="meta">${source} · ${state.events.length} 条时间记录 · ${state.logs.length} 条日志 · ${state.categories.length} 个分类</p><div class="data-primary-action"><button data-action="backup" class="primary">保存完整备份</button><p>包含时间记录、分类、备注和日周月总结。手机端保存到“下载/TimeLedger”；旧版 Android 会打开系统文件窗口。</p></div><p id="exportStatus" class="export-status" role="status" aria-live="polite"></p><details class="data-subsection"><summary>导出表格</summary><div class="actions"><button data-action="events-csv">时间记录 CSV</button><button data-action="logs-csv">日志 CSV</button></div></details></section><section class="card data-section"><h2>迁入与恢复</h2><p class="meta">选择原时间日志 Excel（.xls／.xlsx）或本产品完整备份（.json）。核对预览后才会替换当前设备上的记录。</p><label class="file-label">选择文件<input id="importFile" type="file" accept=".xls,.xlsx,.json,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/json"></label></section><section class="data-secondary"><details class="data-utility"><summary>Flomo 连接 <span>记录与总结</span></summary><div class="data-utility-body"><p class="meta">记录和总结可先预览，再打开 Flomo 草稿。直接发送需在本机设置接入地址。</p><label>Flomo API 地址<input id="flomoWebhook" type="password" autocomplete="off" placeholder="粘贴 flomoapp.com/iwh/… 地址"></label><div class="actions"><button data-action="save-flomo-webhook">保存地址</button><button data-action="clear-flomo-webhook" class="quiet">清除地址</button><span id="flomoSettingStatus" role="status">${localStorage.getItem(FLOMO_KEY)?'本机已保存接入地址':'尚未设置直接发送'}</span></div><p class="meta">地址只保存在当前设备，不写入完整备份。</p></div></details><details class="data-utility"><summary>最近日志 <span>${state.logs.length} 条</span></summary><div class="data-utility-body">${logs||'<p class="muted">当前没有日志。</p>'}</div></details><details class="data-utility danger-zone"><summary>重置本机记录</summary><div class="data-utility-body"><p class="meta">这会清除当前设备上的记录、日志和分类修改。请先保存完整备份。</p><button id="reset" class="quiet">清空本机记录</button></div></details></section></div>`;
+  return `<div class="data-page"><section class="card data-section data-overview"><p class="eyebrow">数据管理</p><h2>记录由你保管</h2><p class="meta">${source} · ${state.events.length} 条时间记录 · ${state.logs.length} 条日志 · ${state.categories.length} 个分类</p><div class="data-primary-action"><button data-action="excel" class="primary">导出 Excel 表格</button><button data-action="backup">保存完整备份 JSON</button><p>Excel 方便查看和筛选；JSON 用于完整恢复。手机端保存到“下载/TimeLedger”。</p></div><p id="exportStatus" class="export-status" role="status" aria-live="polite"></p>${window.Capacitor?.isNativePlatform?.()?'<div class="actions"><button data-action="open-exports" class="quiet">查看下载文件</button></div>':''}<details class="data-subsection"><summary>其他表格格式</summary><div class="actions"><button data-action="events-csv">时间记录 CSV</button><button data-action="logs-csv">日志 CSV</button></div></details></section><section class="card data-section"><h2>迁入与恢复</h2><p class="meta">选择原时间日志 Excel（.xls／.xlsx）或本产品完整备份（.json）。本产品导出的 Excel 供阅读；恢复请选 JSON。核对预览后才会替换当前设备上的记录。</p><label class="file-label">选择文件<input id="importFile" type="file" accept=".xls,.xlsx,.json,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/json"></label></section><section class="data-secondary"><details class="data-utility"><summary>Flomo 连接 <span>记录与总结</span></summary><div class="data-utility-body"><p class="meta">记录和总结可先预览，再打开 Flomo 草稿。直接发送需在本机设置接入地址。</p><label>Flomo API 地址<input id="flomoWebhook" type="password" autocomplete="off" placeholder="粘贴 flomoapp.com/iwh/… 地址"></label><div class="actions"><button data-action="save-flomo-webhook">保存地址</button><button data-action="clear-flomo-webhook" class="quiet">清除地址</button><span id="flomoSettingStatus" role="status">${localStorage.getItem(FLOMO_KEY)?'本机已保存接入地址':'尚未设置直接发送'}</span></div><p class="meta">地址只保存在当前设备，不写入完整备份。</p></div></details><details class="data-utility"><summary>最近日志 <span>${state.logs.length} 条</span></summary><div class="data-utility-body">${logs||'<p class="muted">当前没有日志。</p>'}</div></details><details class="data-utility danger-zone"><summary>重置本机记录</summary><div class="data-utility-body"><p class="meta">这会清除当前设备上的记录、日志和分类修改。请先保存完整备份。</p><button id="reset" class="quiet">清空本机记录</button></div></details></section></div>`;
 }
-function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60_000)}
+function download(name,content,type,binary=false){const bytes=binary?Uint8Array.from(atob(content),char=>char.charCodeAt(0)):content,blob=new Blob([bytes],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60_000)}
 const exportStamp=()=>localInput(Date.now(),true).replace(/\D/g,'').slice(0,14);
-async function exportFile(name,content,type,button){const status=$('#exportStatus');if(!status)return;
+async function exportFile(name,content,type,button,binary=false){const status=$('#exportStatus');if(!status)return;
   if(window.Capacitor?.isNativePlatform?.()){
     button.disabled=true;status.textContent='正在保存并读回校验；旧版 Android 请在系统窗口选择位置。';
-    try{const result=await window.Capacitor.nativePromise('LedgerExport','saveFile',{name,content,mimeType:type.split(';')[0]});
+    try{const result=await window.Capacitor.nativePromise('LedgerExport','saveFile',{name,...(binary?{base64:content}:{content}),mimeType:type.split(';')[0]});
       status.textContent=!result.saved?'已取消保存，没有生成文件。':result.verified===true&&Number.isFinite(result.bytes)&&result.bytes>0?`已保存并读回校验 ${result.name}（${result.bytes} 字节）。位置：${result.location||'系统文件窗口选定的文件夹'}。`:`导出未通过校验，不能作为备份。所选文件夹可能留下空文件；请保留应用中的原记录。${result.warning||''}`;
     }catch(error){status.textContent=`导出失败：${error.message||error}。原记录仍保留在应用中。`}
     finally{button.disabled=false}
     return;
   }
-  try{download(name,content,type);status.textContent=`已发起下载 ${name}。请到浏览器的下载记录核对文件；保存位置由浏览器设置决定。`}
+  try{download(name,content,type,binary);status.textContent=`已发起下载 ${name}。请到浏览器的下载记录核对文件；保存位置由浏览器设置决定。`}
   catch(error){status.textContent=`下载未完成：${error.message||error}`}
 }
+function exportExcel(button){try{const content=readableExcelBase64(state,window.XLSX);return exportFile(`时间账-可读表格-${exportStamp()}.xlsx`,content,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',button,true)}catch(error){$('#exportStatus').textContent=`表格生成失败：${error.message}`}}
+async function openExports(){try{await window.Capacitor.nativePromise('LedgerExport','openExports',{});$('#exportStatus').textContent='已打开系统文件界面；如未直接定位，请进入“下载/TimeLedger”。'}catch(error){$('#exportStatus').textContent=`无法打开文件界面：${error.message||error}。可在手机文件管理器中进入“下载/TimeLedger”。`}}
 function exportEvents(button){const rows=ordered(state.events).map(e=>[localInput(e.start,true).replace('T',' '),e.end===null?'':localInput(e.end,true).replace('T',' '),name(e.categoryId),e.note,e.end===null?'':Math.round((e.end-e.start)/1000),e.estimateSeconds??'',e.legacyTags??'',e.sourceRow??'']);
   return exportFile(`时间账-事件-${exportStamp()}.csv`,csvText(['起始时间','结束时间','分类','备注','总时长（秒）','预估时长（秒）','原标签','来源行号'],rows),'text/csv;charset=utf-8',button)}
 function exportLogs(button){const rows=state.logs.map(x=>[x.date,x.type,x.content,x.sourceRow??'']);return exportFile(`时间账-日志-${exportStamp()}.csv`,csvText(['日期','日志类型','内容','来源行号'],rows),'text/csv;charset=utf-8',button)}
@@ -271,6 +274,8 @@ document.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b
   if(b.dataset.action==='switch')openEvent(null,true);
   if(b.dataset.action==='clock')openClock();
   if(b.dataset.action==='backup')exportFile(`时间账-完整备份-${exportStamp()}.json`,backupText(state),'application/json;charset=utf-8',b);
+  if(b.dataset.action==='excel')exportExcel(b);
+  if(b.dataset.action==='open-exports')openExports();
   if(b.dataset.action==='events-csv')exportEvents(b);
   if(b.dataset.action==='logs-csv')exportLogs(b);
   if(b.dataset.action==='save-review')savePeriodReview();
