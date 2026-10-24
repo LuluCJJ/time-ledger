@@ -11,7 +11,8 @@ const checks=[
   ['Public path tests','node',['--test','scripts/public-paths.test.mjs'],root],
   ['Tracked files','node',['scripts/check-public-tree.mjs'],root],
   ['Git history','node',['scripts/check-history.mjs'],root],
-  ['Whitespace','git',['diff','--check'],root],
+  ['Committed whitespace','git',['show','--format=','--check','HEAD'],root],
+  ['Working-tree whitespace','git',['diff','--check','HEAD'],root],
 ];
 for(const [label,command,args,cwd] of checks){
   console.log(`\n== ${label} ==`);
