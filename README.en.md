@@ -4,6 +4,8 @@
 
 **See where your time went, then choose what to do next.** Time Ledger is a local-first personal time log. Start an activity, close it when you switch, correct the actual times later, and review the shape of your days, weeks, and months.
 
+> **Current backup risk (2026-10-24):** A phone trial user found full-backup JSON files at 0 bytes. The newer write-and-read-back fix has not been verified on that phone. Keep the installed app and its data. Do not treat a filename or a tapped export button as proof of a backup, and do not uninstall, clear data, or upgrade before obtaining a backup that has been restored and checked separately. See [current status](docs/STATUS.md) and the [data rescue procedure](docs/ANDROID_DATA_RESCUE.md).
+
 ## Origin
 
 The project began with [episode 38 of the Chinese podcast *Zong Heng Si Hai*, on time poverty](https://www.xiaoyuzhoufm.com/episode/657d53aa20d779b49d86d299). A recommendation in its comments led me to the Time Logger app (时间日志), which I used for a long time. As my records grew, I wanted a ledger that could also support notes, reflection, portable history, and my personal knowledge system. This project is an independent response to those needs.
@@ -36,7 +38,7 @@ Serve `web/` over HTTP: run `node dev-server.mjs` inside that directory, then op
 
 For Android and desktop builds, in `shells/` run `npm ci`, followed by `npm run android:debug-apk` or `npm run desktop:package`. Android builds require Java and the Android SDK. Run `node --test *.test.mjs` inside `web/` for the model checks. The optional `web/legacy_xls_converter.py` verifies legacy Excel conversions and needs Python with `xlrd`; importing Excel in the app does not require Python.
 
-Before upgrading an existing test installation, export and verify a complete backup. A package with the same ID and signing key can be installed over it; do not uninstall or clear app data. Moving to a formal release key requires a separate restore rehearsal and data-transfer plan.
+Before upgrading an existing test installation, obtain a nonempty complete backup and verify it through an isolated restore. Matching package ID and signing key make an over-install technically possible; they do not make an upgrade safe while backup verification is unresolved. Do not uninstall or clear app data. Moving to a formal release key requires a separate restore rehearsal and data-transfer plan.
 
 To compare a legacy export without writing its contents to the repository, run `node web/excel-import-smoke.mjs <source.xls> <absolute-path-to-python>`. On Windows, `python` may resolve to a Store placeholder rather than an installed interpreter. The script prints counts and a hash, never note text.
 
