@@ -8,6 +8,10 @@ def releaseSigning = [
 ]
 def suppliedSigningValues = releaseSigning.values().count { it != null && !it.isBlank() }
 def releaseSigningReady = suppliedSigningValues == releaseSigning.size()
+def releaseIdSuffix = System.getenv('TIME_LEDGER_RELEASE_ID_SUFFIX')
+if (releaseIdSuffix != null && !(releaseIdSuffix ==~ /\.[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*/)) {
+    throw new GradleException('TIME_LEDGER_RELEASE_ID_SUFFIX must contain lowercase Android application ID segments, for example .formal')
+}
 
 android {
     namespace = "app.personal.timeledger"
@@ -37,6 +41,7 @@ android {
     }
     buildTypes {
         release {
+            if (releaseIdSuffix != null) applicationIdSuffix releaseIdSuffix
             if (releaseSigningReady) signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
