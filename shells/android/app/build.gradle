@@ -9,8 +9,15 @@ def releaseSigning = [
 def suppliedSigningValues = releaseSigning.values().count { it != null && !it.isBlank() }
 def releaseSigningReady = suppliedSigningValues == releaseSigning.size()
 def releaseIdSuffix = System.getenv('TIME_LEDGER_RELEASE_ID_SUFFIX')
+def releaseAppLabel = System.getenv('TIME_LEDGER_RELEASE_APP_LABEL')
 if (releaseIdSuffix != null && !(releaseIdSuffix ==~ /\.[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)*/)) {
     throw new GradleException('TIME_LEDGER_RELEASE_ID_SUFFIX must contain lowercase Android application ID segments, for example .formal')
+}
+if (releaseIdSuffix != null && (releaseAppLabel == null || releaseAppLabel.isBlank())) {
+    throw new GradleException('A side-by-side release requires TIME_LEDGER_RELEASE_APP_LABEL so the two phone icons can be distinguished')
+}
+if (releaseAppLabel != null && (releaseAppLabel.isBlank() || releaseAppLabel.length() > 30 || releaseAppLabel.contains('\n'))) {
+    throw new GradleException('TIME_LEDGER_RELEASE_APP_LABEL must be a single nonblank line of at most 30 characters')
 }
 
 android {
@@ -18,6 +25,7 @@ android {
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "app.personal.timeledger"
+        manifestPlaceholders = [timeLedgerAppLabel: '@string/app_name']
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -42,6 +50,7 @@ android {
     buildTypes {
         release {
             if (releaseIdSuffix != null) applicationIdSuffix releaseIdSuffix
+            if (releaseAppLabel != null) manifestPlaceholders.timeLedgerAppLabel = releaseAppLabel
             if (releaseSigningReady) signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
