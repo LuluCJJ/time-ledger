@@ -139,7 +139,7 @@ async function exportFile(name,content,type,button){const status=$('#exportStatu
   if(window.Capacitor?.isNativePlatform?.()){
     button.disabled=true;status.textContent='请选择保存文件的位置；只有点“保存”后才会写入。';
     try{const result=await window.Capacitor.nativePromise('LedgerExport','saveFile',{name,content,mimeType:type.split(';')[0]});
-      status.textContent=!result.saved?'已取消保存，没有生成文件。':result.verified===true?`已保存并读回校验 ${result.name}（${Math.ceil(result.bytes/1024)} KB）。位置是你刚才在系统文件窗口选择的文件夹。`:result.verified===false?`文件已写入 ${result.name}，但读回校验未通过。请到所选文件夹确认文件并再导出一份。${result.warning||''}`:`已保存 ${result.name}（${Math.ceil(result.bytes/1024)} KB），位置是你刚才在系统文件窗口选择的文件夹。请核对文件。`;
+      status.textContent=!result.saved?'已取消保存，没有生成文件。':result.verified===true&&Number.isFinite(result.bytes)&&result.bytes>0?`已保存并读回校验 ${result.name}（${result.bytes} 字节）。位置是你刚才在系统文件窗口选择的文件夹。`:`导出未通过校验，不能作为备份。所选文件夹可能留下空文件；请保留应用中的原记录。${result.warning||''}`;
     }catch(error){status.textContent=`导出失败：${error.message||error}。原记录仍保留在应用中。`}
     finally{button.disabled=false}
     return;
