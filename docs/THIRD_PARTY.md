@@ -6,6 +6,8 @@ Attribution: SheetJS Community Edition — https://sheetjs.com/ · Copyright (C)
 
 The Android and desktop dependencies are declared in `shells/package.json` and pinned by `shells/package-lock.json`. Their installed packages are not copied into this source repository. Direct dependencies and their installed license files were checked on 2026-10-23:
 
+The source repository does include Gradle's generated wrapper scripts and `gradle-wrapper.jar` (Gradle 8.14.3; Apache-2.0). The JAR's SHA-256 matches [Gradle's published wrapper checksum](https://gradle.org/release-checksums/). The wrapper's distribution URL now has Gradle's published `-all` ZIP SHA-256 pinned in `gradle-wrapper.properties`. Gradle's [project license](https://github.com/gradle/gradle/blob/master/LICENSE) applies to this redistributed build tool; the repository root contains the Apache-2.0 text.
+
 | Dependency | Version | Installed license | Role |
 | --- | --- | --- | --- |
 | `@capacitor/core`, `@capacitor/android` | 8.5.3 | MIT | Android application runtime |
