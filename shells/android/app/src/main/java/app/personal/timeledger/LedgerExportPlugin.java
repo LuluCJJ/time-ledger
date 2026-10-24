@@ -1,13 +1,14 @@
 package app.personal.timeledger;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.DocumentsContract;
 import android.util.Base64;
 import android.content.ContentValues;
 import android.content.ContentResolver;
@@ -29,6 +30,8 @@ import java.util.Arrays;
 
 @CapacitorPlugin(name = "LedgerExport")
 public class LedgerExportPlugin extends Plugin {
+    private static final String EXPORT_PREFS = "ledger-recent-export";
+
     private File pendingFile() {
         return new File(getContext().getFilesDir(), "pending-ledger-export.bin");
     }
@@ -77,20 +80,50 @@ public class LedgerExportPlugin extends Plugin {
     }
 
     @PluginMethod
-    public void openExports(PluginCall call) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Uri folder = DocumentsContract.buildDocumentUri("com.android.externalstorage.documents", "primary:Download/TimeLedger");
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, folder);
+    public void openRecentExport(PluginCall call) {
+        launchRecentExport(call, false);
+    }
+
+    @PluginMethod
+    public void shareRecentExport(PluginCall call) {
+        launchRecentExport(call, true);
+    }
+
+    private void launchRecentExport(PluginCall call, boolean share) {
+        SharedPreferences recent = getContext().getSharedPreferences(EXPORT_PREFS, Activity.MODE_PRIVATE);
+        String savedUri = recent.getString("uri", null);
+        String mimeType = recent.getString("mimeType", null);
+        if (savedUri == null || mimeType == null) {
+            call.reject("请先从本应用重新导出一个文件");
+            return;
         }
         try {
-            getActivity().startActivity(intent);
+            Uri uri = Uri.parse(savedUri);
+            try (InputStream stream = getContext().getContentResolver().openInputStream(uri)) {
+                if (stream == null || stream.read() == -1) throw new IllegalStateException("导出文件已不存在或为空");
+            }
+            Intent intent = new Intent(share ? Intent.ACTION_SEND : Intent.ACTION_VIEW);
+            if (share) {
+                intent.setType(mimeType);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+            } else {
+                intent.setDataAndType(uri, mimeType);
+            }
+            intent.setClipData(ClipData.newRawUri(recent.getString("name", "时间账导出"), uri));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Intent chooser = Intent.createChooser(intent, share ? "分享时间账导出文件" : "打开时间账导出文件");
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            getActivity().startActivity(chooser);
             call.resolve();
         } catch (Exception error) {
-            call.reject("无法打开系统文件界面：" + error.getMessage());
+            call.reject("无法访问最近导出的文件；请从文件管理器打开“下载/TimeLedger”，或重新导出");
         }
+    }
+
+    private void rememberExport(Uri uri, String name, String mimeType) {
+        getContext().getSharedPreferences(EXPORT_PREFS, Activity.MODE_PRIVATE).edit()
+            .putString("uri", uri.toString()).putString("name", name)
+            .putString("mimeType", mimeType).apply();
     }
 
     private void saveToDownloads(PluginCall call, String name, String mimeType, byte[] bytes) {
@@ -113,6 +146,7 @@ public class LedgerExportPlugin extends Plugin {
             ContentValues ready = new ContentValues();
             ready.put(MediaStore.MediaColumns.IS_PENDING, 0);
             if (resolver.update(uri, ready, null, null) != 1) throw new IllegalStateException("文件未能完成保存");
+            rememberExport(uri, name, mimeType);
             JSObject response = new JSObject();
             response.put("saved", true);
             response.put("verified", true);
@@ -172,6 +206,11 @@ public class LedgerExportPlugin extends Plugin {
         response.put("name", call.getString("name"));
         response.put("bytes", bytes.length);
         pendingFile().delete();
+        try {
+            int readFlag = result.getData().getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
+            if (readFlag != 0) getContext().getContentResolver().takePersistableUriPermission(uri, readFlag);
+        } catch (SecurityException ignored) { /* The current session can still open the selected document. */ }
+        rememberExport(uri, call.getString("name", "时间账导出"), call.getString("mimeType", "application/octet-stream"));
         call.resolve(response);
     }
 

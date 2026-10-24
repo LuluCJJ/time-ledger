@@ -4,7 +4,7 @@
 
 **See where your time went, then choose what to do next.** Time Ledger is a local-first personal time log. Start an activity, close it when you switch, correct the actual times later, and review the shape of your days, weeks, and months.
 
-> **Current backup status (2026-10-24):** Earlier phone trials produced 0-byte JSON files and v37 still crashed on export. The user reports that v38 produced a nonempty JSON file; a phone screenshot shows the app's “saved and read-back verified” message. The file has not yet been restored in isolation. Keep the installed app and its data, and do not uninstall, clear data, or move to a differently signed package until a separate restore has been checked. See [current status](docs/STATUS.md) and the [data rescue procedure](docs/ANDROID_DATA_RESCUE.md).
+> **Current backup status (2026-10-24):** Earlier phone trials produced 0-byte JSON files. A later complete backup supplied by the user was imported into a fresh, separate ledger and its record counts persisted after reload. This establishes that the supplied snapshot is restorable; newer phone records still need comparison, and an Android restore rehearsal remains open. Keep the installed app and its data. Do not uninstall, clear data, or move to a differently signed package. See [current status](docs/STATUS.md) and the [data rescue procedure](docs/ANDROID_DATA_RESCUE.md).
 
 ## Origin
 
