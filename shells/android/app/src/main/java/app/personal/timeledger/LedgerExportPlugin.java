@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.content.ContentValues;
+import android.content.ContentResolver;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -39,6 +44,12 @@ public class LedgerExportPlugin extends Plugin {
             call.reject("导出内容为空；没有生成有效备份");
             return;
         }
+        // On Android 10+, write into Downloads without opening another Activity.
+        // This also avoids device-specific crashes while returning from the file picker.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            saveToDownloads(call, name, mimeType, content.getBytes(StandardCharsets.UTF_8));
+            return;
+        }
         // Stage a private copy before DocumentsUI opens. Some phones recreate the
         // Activity while the picker is visible and the resumed PluginCall loses options.
         try (FileOutputStream staged = new FileOutputStream(pendingFile())) {
@@ -53,6 +64,41 @@ public class LedgerExportPlugin extends Plugin {
         intent.setType(mimeType);
         intent.putExtra(Intent.EXTRA_TITLE, name);
         startActivityForResult(call, intent, "onFileChosen");
+    }
+
+    private void saveToDownloads(PluginCall call, String name, String mimeType, byte[] bytes) {
+        ContentResolver resolver = getContext().getContentResolver();
+        Uri uri = null;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
+            values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/TimeLedger");
+            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
+            uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+            if (uri == null) throw new IllegalStateException("无法在下载目录建立文件");
+            try {
+                writeAndSync(uri, bytes);
+            } catch (Exception descriptorError) {
+                writeWithStream(uri, bytes);
+            }
+            if (!matchesExport(uri, bytes)) throw new IllegalStateException("文件读回内容与导出内容不一致");
+            ContentValues ready = new ContentValues();
+            ready.put(MediaStore.MediaColumns.IS_PENDING, 0);
+            if (resolver.update(uri, ready, null, null) != 1) throw new IllegalStateException("文件未能完成保存");
+            JSObject response = new JSObject();
+            response.put("saved", true);
+            response.put("verified", true);
+            response.put("name", name);
+            response.put("bytes", bytes.length);
+            response.put("location", "Download/TimeLedger");
+            call.resolve(response);
+        } catch (Exception error) {
+            if (uri != null) {
+                try { resolver.delete(uri, null, null); } catch (Exception ignored) { /* Keep the original error. */ }
+            }
+            call.reject("导出未完成：" + error.getMessage() + "。应用内原记录仍保留");
+        }
     }
 
     @ActivityCallback

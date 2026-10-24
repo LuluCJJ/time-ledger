@@ -44,6 +44,10 @@ The Windows x64 desktop package rebuilt successfully on 2026-10-24 and contains 
 
 Source publication and APK publication may be separate milestones. If source is published first, describe the remaining Android verification plainly in `STATUS.md` and the release notes.
 
+## Android export follow-up
+
+After the user reported v37 still crashes while exporting, v38 switches Android 10+ exports to direct insertion in `Download/TimeLedger` through MediaStore, without launching the document picker. The app publishes a file only after a byte count and SHA-256 read-back match; failures attempt to delete the incomplete entry. Android 9 and older retain the picker path. The local trial APK is `TimeLedger-preview-2026-10-24-v38.apk`, SHA-256 `3DC72A108E9D7CE3A6CDEC320BC20FE8EFAA622FE51BA19261B64A05D97FAB4C` (4,840,627 bytes); it has the same package ID, versionCode and debug signer as v37. Compilation and APK signature verification passed, but the direct export route has **not** been tested on the user's phone; the root cause of the earlier crash remains unknown. No old zero-byte file should be treated as a backup.
+
 ## Decisions for the owner
 
 1. Public name and GitHub account: `LuluCJJ/time-ledger` selected.
