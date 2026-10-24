@@ -45,6 +45,8 @@ def main() -> int:
     filename = f"time-ledger-debug-data-{datetime.now().strftime('%Y%m%d-%H%M%S')}.tar"
     target = output_dir / filename
     partial = output_dir / (filename + ".partial")
+    if target.exists():
+        raise RuntimeError("An archive with this timestamp already exists; rerun later instead of overwriting it.")
     digest = hashlib.sha256()
     count = 0
 

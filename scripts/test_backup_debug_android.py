@@ -62,6 +62,19 @@ class BackupTests(unittest.TestCase):
                         BACKUP.main()
             self.assertFalse((Path(folder) / "backup").exists())
 
+    def test_existing_archive_is_not_overwritten(self):
+        with tempfile.TemporaryDirectory() as folder:
+            fixed_name = "time-ledger-debug-data-20261024-120000.tar"
+            existing = Path(folder) / fixed_name
+            existing.write_bytes(b"existing private archive")
+            with patch.object(BACKUP.datetime, "now") as now:
+                now.return_value.strftime.return_value = "20261024-120000"
+                with patch.object(BACKUP, "run_text", side_effect=["List of devices attached\nTEST123\tdevice", "/data/user/0/app.personal.timeledger"]):
+                    with patch.object(sys, "argv", ["backup", "--output-dir", folder]):
+                        with self.assertRaisesRegex(RuntimeError, "already exists"):
+                            BACKUP.main()
+            self.assertEqual(existing.read_bytes(), b"existing private archive")
+
 
 if __name__ == "__main__":
     unittest.main()

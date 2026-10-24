@@ -8,7 +8,7 @@ The v35 trial APK's compiled manifest confirms package `app.personal.timeledger`
 
 1. Keep the existing app installed and continue to avoid clearing its data. Connect exactly one authorized device with USB debugging enabled. Approve the device trust prompt on the phone.
 2. Choose a private folder **outside every Git repository**. On the local development machine, run `py -3 scripts/backup-debug-android.py --adb "C:\path\to\Android\Sdk\platform-tools\adb.exe" --output-dir "C:\private\time-ledger-backups"` from the repository root. Replace both paths with the real local paths. The script refuses to write inside a Git repository.
-3. Record the archive path, byte count, and SHA-256 printed by the script. A positive byte count and a valid TAR structure are only first checks. Do not delete or upgrade the app yet.
+3. Record the archive path, byte count, and SHA-256 printed by the script. A positive byte count and a valid TAR structure are only first checks. A rerun with the same timestamp refuses to overwrite an existing archive. Do not delete or upgrade the app yet.
 4. In an isolated local environment, inspect the archived WebView storage for the ledger key, parse it, and compare event, category, log, and period-review counts plus sample records against the still-running phone. Any exported JSON restored in a separate test profile must match those checks before treating it as a recovery backup.
 5. Turn USB debugging off after the copy if it is no longer needed. Keep the raw archive and any derived backup in private storage with controlled access.
 
