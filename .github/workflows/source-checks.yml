@@ -20,6 +20,8 @@ jobs:
           node-version: 24
           package-manager-cache: false
       - run: node scripts/verify-source.mjs
+      - name: Check debug-backup helper with fixture data
+        run: python3 -m unittest scripts/test_backup_debug_android.py
       - name: Install locked build dependencies
         run: npm ci --ignore-scripts
         working-directory: shells
