@@ -81,18 +81,17 @@ def main():
     args = parser.parse_args()
     payload = convert(args.source)
     report = {
-        "source_file": args.source.name,
         "events": len(payload["events"]), "logs": len(payload["logs"]),
-        "unknown_categories": [c["name"] for c in payload["extraCategories"]],
+        "unknown_categories": len(payload["extraCategories"]),
         "zero_duration_events": sum(e["start"] == e["end"] for e in payload["events"]),
         "work_name_mapping": "XLS 只有名称，‘工作’暂映射到截图中的‘工作 / 工作’子分类",
     }
     if args.output:
         if args.output.exists():
-            raise FileExistsError(f"目标已存在，不覆盖：{args.output}")
+            raise FileExistsError("目标已存在，不覆盖")
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-        report["output"] = str(args.output)
+        report["output_written"] = True
     print(json.dumps(report, ensure_ascii=True, indent=2))
 
 
