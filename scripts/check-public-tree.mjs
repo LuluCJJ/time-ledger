@@ -1,10 +1,10 @@
 import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
+import {isUnsafePublicPath} from './public-paths.mjs';
 
 const git=(...args)=>execFileSync('git',args,{encoding:'utf8'}).trim();
 const paths=git('ls-files','-z').split('\0').filter(Boolean);
-const forbidden=/\.(?:xls|xlsx|csv|db|sqlite|sqlite3|apk|exe|mp4|m4a|jks|keystore)$/i;
-const unsafePaths=paths.filter(path=>forbidden.test(path)||/(?:^|\/)(?:private|backups|recordings)(?:\/|$)/i.test(path));
+const unsafePaths=paths.filter(isUnsafePublicPath);
 if(unsafePaths.length) throw Error(`Tracked private/build files: ${unsafePaths.join(', ')}`);
 const checks=[
   {name:'private webhook',pattern:/flomoapp\.com\/iwh\/[A-Za-z0-9]+\/[A-Za-z0-9]+/i},

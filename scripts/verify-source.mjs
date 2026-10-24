@@ -8,6 +8,7 @@ const web=path.join(root,'web');
 const testFiles=readdirSync(web).filter(file=>file.endsWith('.test.mjs'));
 const checks=[
   ['Web tests','node',['--test',...testFiles],web],
+  ['Public path tests','node',['--test','scripts/public-paths.test.mjs'],root],
   ['Tracked files','node',['scripts/check-public-tree.mjs'],root],
   ['Git history','node',['scripts/check-history.mjs'],root],
   ['Whitespace','git',['diff','--check'],root],

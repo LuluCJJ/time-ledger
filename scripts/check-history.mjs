@@ -1,12 +1,12 @@
 import {execFileSync} from 'node:child_process';
+import {isUnsafePublicPath} from './public-paths.mjs';
 
 const git=(...args)=>execFileSync('git',args,{encoding:'utf8',maxBuffer:64*1024*1024});
 const objects=git('rev-list','--objects','--all').trim().split('\n').map(line=>{const space=line.indexOf(' ');return {id:space<0?line:line.slice(0,space),path:space<0?'':line.slice(space+1)}}).filter(x=>x.path);
 const commitEmails=git('log','--all','--format=%ae%n%ce').trim().split('\n').filter(Boolean);
 const publicEmailPattern=/@users\.noreply\.github\.com$/i;
 const exposedEmailCount=new Set(commitEmails.filter(email=>!publicEmailPattern.test(email))).size;
-const forbidden=/\.(?:xls|xlsx|csv|db|sqlite|sqlite3|apk|exe|mp4|m4a|jks|keystore)$/i;
-const unsafePaths=objects.filter(x=>forbidden.test(x.path)||/(?:^|\/)(?:private|backups|recordings)(?:\/|$)/i.test(x.path));
+const unsafePaths=objects.filter(x=>isUnsafePublicPath(x.path));
 const sensitive=[/flomoapp\.com\/iwh\/[A-Za-z0-9]+\/[A-Za-z0-9]+/i,/[A-Z]:[\\/]Users[\\/][^\\/\s"']+/i,/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/];
 const findings=[];
 const seen=new Set();
