@@ -5,6 +5,7 @@ Status: source-only preview published at [`LuluCJJ/time-ledger`](https://github.
 ## Source candidate
 
 - [x] Separate repository with Chinese and English README, product principles, data boundary and third-party notice.
+- [x] Resolve local Markdown links in both READMEs, `CONTRIBUTING.md` and the nine `docs/*.md` pages against the current checkout: all twelve documents had zero missing local targets on 2026-10-24. External links and anchor validity are separate checks.
 - [x] One future source location declared in `PROJECT_GOVERNANCE.md`.
 - [x] Single local source preflight entry point: `node scripts/verify-source.mjs` runs web tests, tracked-file scan, history scan and diff formatting; passed on 2026-10-24. It intentionally does not assert real-phone or signing safety.
 - [x] GitHub Actions source checks run on pushes and pull requests with full history, read-only token and Node 24. They also run three fixture tests for the debug-app rescue helper. Commit `1495216` passed [source checks](https://github.com/LuluCJJ/time-ledger/actions/runs/40048702767). Recheck each later release commit.
