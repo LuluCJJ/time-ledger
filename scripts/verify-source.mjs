@@ -9,7 +9,7 @@ const testFiles=readdirSync(web).filter(file=>file.endsWith('.test.mjs'));
 const checks=[
   ['Web tests','node',['--test',...testFiles],web],
   ['Public path tests','node',['--test','scripts/public-paths.test.mjs'],root],
-  ['Private backup inspector tests','node',['--test','scripts/check-private-backup.test.mjs'],root],
+  ['Private-data inspection tests','node',['--test','scripts/check-private-backup.test.mjs','scripts/compare-legacy-backup.test.mjs'],root],
   ['Tracked files','node',['scripts/check-public-tree.mjs'],root],
   ['Git history','node',['scripts/check-history.mjs'],root],
   ['Committed whitespace','git',['show','--format=','--check','HEAD'],root],
