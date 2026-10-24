@@ -4,7 +4,7 @@
 
 **See where your time went, then choose what to do next.** Time Ledger is a local-first personal time log. Start an activity, close it when you switch, correct the actual times later, and review the shape of your days, weeks, and months.
 
-> **Current backup risk (2026-10-24):** A phone trial user found full-backup JSON files at 0 bytes. The newer write-and-read-back fix has not been verified on that phone. Keep the installed app and its data. Do not treat a filename or a tapped export button as proof of a backup, and do not uninstall, clear data, or upgrade before obtaining a backup that has been restored and checked separately. See [current status](docs/STATUS.md) and the [data rescue procedure](docs/ANDROID_DATA_RESCUE.md).
+> **Current backup risk (2026-10-24):** A phone trial user found 0-byte full-backup JSON files. Over-installing v37 preserved existing records, but export still crashed. v38 saves directly to Android Downloads and awaits a test on that phone. Keep the installed app and its data. A filename or tapped export button does not prove a valid backup. Do not uninstall, clear data, or move to a differently signed package before restoring and checking a complete backup separately. See [current status](docs/STATUS.md) and the [data rescue procedure](docs/ANDROID_DATA_RESCUE.md).
 
 ## Origin
 
@@ -40,7 +40,7 @@ For Android and desktop builds, in `shells/` run `npm ci`, followed by `npm run 
 
 Before upgrading an existing test installation, obtain a nonempty complete backup and verify it through an isolated restore. Matching package ID and signing key make an over-install technically possible; they do not make an upgrade safe while backup verification is unresolved. Do not uninstall or clear app data. Moving to a formal release key requires a separate restore rehearsal and data-transfer plan.
 
-To compare a legacy export without writing its contents to the repository, run `node web/excel-import-smoke.mjs <source.xls> <absolute-path-to-python>`. On Windows, `python` may resolve to a Store placeholder rather than an installed interpreter. The script prints counts and a hash, never note text.
+To compare a legacy export without writing its contents to the repository, run `node web/excel-import-smoke.mjs <source.xls>`. The script defaults to `py -3` on Windows and `python3` elsewhere; an explicit Python executable can be supplied after the file path. It prints counts and a hash, never note text.
 
 The Android launcher and splash artwork is generated from original shapes by `shells/scripts/generate-brand-assets.py`. Regeneration needs Python Pillow; a normal APK build uses the committed PNG assets.
 
