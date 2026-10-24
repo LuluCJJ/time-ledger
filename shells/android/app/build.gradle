@@ -16,6 +16,9 @@ if (releaseIdSuffix != null && !(releaseIdSuffix ==~ /\.[a-z][a-z0-9_]*(\.[a-z][
 if (releaseIdSuffix != null && (releaseAppLabel == null || releaseAppLabel.isBlank())) {
     throw new GradleException('A side-by-side release requires TIME_LEDGER_RELEASE_APP_LABEL so the two phone icons can be distinguished')
 }
+if (releaseIdSuffix != null && releaseAppLabel?.trim() == '时间账') {
+    throw new GradleException('TIME_LEDGER_RELEASE_APP_LABEL must differ from the installed trial app label')
+}
 if (releaseAppLabel != null && (releaseAppLabel.isBlank() || releaseAppLabel.length() > 30 || releaseAppLabel.contains('\n'))) {
     throw new GradleException('TIME_LEDGER_RELEASE_APP_LABEL must be a single nonblank line of at most 30 characters')
 }
