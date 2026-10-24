@@ -8,9 +8,12 @@ const webRoot=path.resolve(__dirname,'../web');
 
 app.whenReady().then(()=>{
   protocol.handle('ledger',request=>{
-    const url=new URL(request.url);
+    let url;
+    try{url=new URL(request.url)}catch{return new Response('Bad request',{status:400})}
     if(url.host!=='bundle') return new Response('Not found',{status:404});
-    const target=path.resolve(webRoot,decodeURIComponent(url.pathname).replace(/^\/+/,''));
+    let pathname;
+    try{pathname=decodeURIComponent(url.pathname)}catch{return new Response('Bad request',{status:400})}
+    const target=path.resolve(webRoot,pathname.replace(/^\/+/,''));
     const relative=path.relative(webRoot,target);
     if(relative.startsWith('..')||path.isAbsolute(relative)) return new Response('Forbidden',{status:403});
     return net.fetch(pathToFileURL(target).toString());

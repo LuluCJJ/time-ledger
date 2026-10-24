@@ -6,7 +6,9 @@ const root=resolve(import.meta.dirname);
 const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.js':'text/javascript; charset=utf-8'};
 const port=Number(process.env.PORT||4174);
 createServer(async(req,res)=>{
-  const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
+  let pathname;
+  try{pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname)}
+  catch{res.writeHead(400).end('Bad request');return}
   const target=resolve(root,'.'+(pathname==='/'?'/index.html':pathname));
   if(target!==root&&!target.startsWith(root+sep)){res.writeHead(403).end();return}
   try{const data=await readFile(target);res.writeHead(200,{'content-type':mime[extname(target)]||'application/octet-stream'}).end(data)}
