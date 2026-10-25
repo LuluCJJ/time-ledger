@@ -7,7 +7,7 @@
   "scripts": {
     "web:prepare": "node scripts/prepare-web.mjs",
     "desktop:dev": "npm run web:prepare && electron .",
-    "desktop:package": "npm run web:prepare && node scripts/prepare-desktop.mjs && electron-packager staging-desktop TimeLedger --platform=win32 --arch=x64 --out=dist --overwrite",
+    "desktop:package": "npm run web:prepare && node scripts/prepare-desktop.mjs && electron-packager staging-desktop TimeLedger --platform=win32 --arch=x64 --out=dist --overwrite && node scripts/verify-desktop-package.mjs",
     "android:add": "npm run web:prepare && cap add android",
     "android:sync": "npm run web:prepare && cap sync android",
     "android:debug-apk": "npm run android:sync && cd android && gradlew.bat assembleDebug"
@@ -16,6 +16,7 @@
     "@capacitor/android": "8.5.3",
     "@capacitor/cli": "8.5.3",
     "@capacitor/core": "8.5.3",
+    "@electron/asar": "4.3.1",
     "@electron/packager": "20.3.0",
     "electron": "44.9.1"
   },

@@ -36,7 +36,7 @@ Run `node scripts/verify-source.mjs` from the repository root for the local sour
 
 Serve `web/` over HTTP: run `node dev-server.mjs` inside that directory, then open `http://127.0.0.1:4174/`. Browser and Android records are stored separately.
 
-For Android and desktop builds, in `shells/` run `npm ci`, followed by `npm run android:debug-apk` or `npm run desktop:package`. Android builds require Java and the Android SDK. Run `node --test *.test.mjs` inside `web/` for the model checks. The optional `web/legacy_xls_converter.py` verifies legacy Excel conversions and needs Python with `xlrd`; importing Excel in the app does not require Python.
+For Android and desktop builds, in `shells/` run `npm ci`, followed by `npm run android:debug-apk` or `npm run desktop:package`. Desktop packaging recreates its staging directories and checks the packaged app files and license texts against the current source. This check does not replace runtime testing or release review. Android builds require Java and the Android SDK. Run `node --test *.test.mjs` inside `web/` for the model checks. The optional `web/legacy_xls_converter.py` verifies legacy Excel conversions and needs Python with `xlrd`; importing Excel in the app does not require Python.
 
 Before upgrading an existing test installation, obtain a nonempty complete backup and verify it through an isolated restore. Matching package ID and signing key make an over-install technically possible; they do not make an upgrade safe while backup verification is unresolved. Do not uninstall or clear app data. Moving to a formal release key requires a separate restore rehearsal and data-transfer plan.
 

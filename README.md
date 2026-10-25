@@ -45,6 +45,8 @@ npm run android:debug-apk
 npm run desktop:package
 ```
 
+桌面打包会重新准备临时资源，并自动核对包内应用文件、四份许可文本及 Electron/Chromium 许可文件；若文件不符，命令会失败。这个检查不能替代运行测试或正式发布审核。
+
 Android 构建需要 Java 和 Android SDK；首次构建还会下载 Gradle 依赖。网页逻辑检查可在 `web/` 运行 `node --test *.test.mjs`。`web/legacy_xls_converter.py` 是供核对旧 Excel 转换的独立工具，需另装 Python 包 `xlrd`；用户在网页或 APK 中导入 Excel 不依赖 Python。已有试用版的手机在升级前应取得非零且经隔离恢复核对的完整备份；仅凭同签名可以覆盖安装，并不表示此刻适合升级。不要卸载或清除应用数据。改用正式签名时须先完成独立恢复演练和数据转移。
 
 如需在本机只读核对一份旧导出，可运行 `node web/excel-import-smoke.mjs <原始XLS路径>`。Windows 默认使用 `py -3`，其他系统默认使用 `python3`；也可在路径后传入自选 Python 解释器。脚本只输出数量和哈希摘要，不输出备注正文。

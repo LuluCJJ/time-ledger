@@ -1,4 +1,4 @@
-import {mkdir,copyFile,readFile} from 'node:fs/promises';
+import {mkdir,copyFile,readFile,rm} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 
@@ -6,6 +6,8 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const source=path.resolve(root,'../web');
 const dest=path.join(root,'web');
 const files=['index.html','app.mjs','model.mjs','portability.mjs','legacy-excel.mjs','readable-excel-import.mjs','color.mjs','insights.mjs','flomo.mjs','storage.mjs','excel-export.mjs','styles.css'];
+if(path.dirname(dest)!==root||path.basename(dest)!=='web') throw Error('Refusing to clear an unexpected web staging path');
+await rm(dest,{recursive:true,force:true});
 await mkdir(dest,{recursive:true});
 for(const file of files) await copyFile(path.join(source,file),path.join(dest,file));
 await mkdir(path.join(dest,'vendor'),{recursive:true});
