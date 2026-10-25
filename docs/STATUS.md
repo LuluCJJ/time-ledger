@@ -1,6 +1,6 @@
 # 当前状态
 
-更新：2026-10-25。源码已公开于 [LuluCJJ/time-ledger](https://github.com/LuluCJJ/time-ledger)；**尚未公开 APK 或 Windows 安装包**。目前准备使用现有签名 APK 发布一份 GitHub 预览版，发布前仍须仓库所有者最终确认。
+更新：2026-10-25。源码已公开于 [LuluCJJ/time-ledger](https://github.com/LuluCJJ/time-ledger)，现有签名 APK 已作为 [1.0 预览版](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) 发布。Windows 安装包尚未公开。
 
 ## 已实现
 
@@ -18,7 +18,7 @@
 ## 发布预览版时需说明
 
 - 正式版与现用试用版是不同包名，**不会自动共享记录**。用户须自行保留原应用和完整备份，再决定是否迁入。
-- 正式版在独立 Android 安装上的 JSON 恢复与试用版并行迁移没有做真机验证；仓库所有者决定跳过这次复测，发布说明会明示此限制。
+- 正式版在独立 Android 安装上的 JSON 恢复与试用版并行迁移没有做真机验证；仓库所有者决定跳过这次复测，[发布说明](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)已明示此限制。
 - 备份若含仍在进行中的活动，导入后会沿用旧起点继续计时。正式迁移宜在结束当前活动后重新导出。
 - 永久签名材料尚无离线副本；Windows 包尚未作为公开安装包发布。
 

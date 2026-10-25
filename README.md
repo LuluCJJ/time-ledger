@@ -63,4 +63,4 @@ docs/      产品原则、隐私与当前状态
 
 **隐私边界：** 仓库只收录源码、虚构样本、测试和公开说明。真实时间记录、旧 Excel、个人 Wiki、录屏、Flomo 接入地址、签名密钥和生成的 APK/EXE 不属于公开源码。提交前请按 [数据与隐私](docs/DATA.md) 自查。
 
-本项目原创代码与文档采用 [Apache License 2.0](LICENSE)。第三方组件按各自许可证使用，见[第三方组件](docs/THIRD_PARTY.md)。当前公开的是源码预览；安装包须另行完成数据迁移与签名验收。
+本项目原创代码与文档采用 [Apache License 2.0](LICENSE)。第三方组件按各自许可证使用，见[第三方组件](docs/THIRD_PARTY.md)。[Android 1.0 预览版 APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) 已公开；它与现用试用版数据独立，正式版迁移尚未经真机验证，详见[当前状态](docs/STATUS.md)。
