@@ -2,6 +2,8 @@
 
 The public repository contains no signing key. An installable release must be signed with a key held by the maintainer. Keep the keystore and passwords outside this repository, and retain a recoverable offline copy. The owner selected `app.personal.timeledger.official` and launcher label `时间账 正式版` for the formal app. The existing debug trial remains `app.personal.timeledger` / `时间账`. The first formal build currently uses `versionCode 1` / `versionName 1.0`; increment the code for subsequent updates.
 
+On Windows, after attaching a private removable drive, run `shells/scripts/backup-signing.ps1 -SourceDirectory <private-signing-directory> -DestinationDirectory <removable-drive-directory>`. The script copies the keystore and its credential file to a new timestamped folder, refuses a destination inside this public repository, and compares SHA-256 hashes after copying. It never prints credential contents. Disconnect and store the drive separately afterward. A copy on another folder of the same computer does not satisfy the offline-backup requirement. A fictional-file rehearsal passed locally; the real signing material has **not** yet been copied to an offline drive.
+
 ## Signing inputs
 
 The Android Gradle project reads four environment variables at build time:
