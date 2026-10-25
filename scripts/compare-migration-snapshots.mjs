@@ -53,9 +53,10 @@ export async function compareSnapshots(legacyPath,readablePath,backupPath){
   const legacy=await parseSheet(legacyPath),readable=await parseSheet(readablePath);
   if(legacy.payload.format!=='time-ledger-import-v1'||readable.payload.format!=='time-ledger-backup-v1')throw Error('Unexpected workbook type');
   const backup=parseImport(readFileSync(backupPath,'utf8'));
-  const current=readable.payload.state;
+  const current=parseImport(JSON.stringify(readable.payload));
   const old=legacy.payload;
   return {
+    readableImportValidated:true,
     fileHashes:{legacy:legacy.report.sha256,readable:readable.report.sha256},
     counts:{legacyEvents:old.events.length,readableEvents:current.events.length,backupEvents:backup.events.length,
       legacyLogs:old.logs.length,readableLogs:current.logs.length,backupLogs:backup.logs.length,
