@@ -25,7 +25,7 @@ Time Ledger is not affiliated with the podcast or the existing app. Their produc
 - One hierarchical, color-coded category per record; daily timeline and weekly/monthly views.
 - A focus clock based on actual elapsed time, with an optional expected end; Android supports keep-awake, landscape, and immersive full screen.
 - Daily plans and summaries, category distributions, and written weekly/monthly reviews.
-- Import legacy `.xls` or compatible `.xlsx`; export a readable five-sheet Excel workbook, a full JSON recovery backup, or CSV files.
+- Import legacy `.xls` or compatible `.xlsx`; export a readable five-sheet Excel workbook, a full JSON recovery backup, or CSV files. Time Ledger's readable workbook can also be imported to recover the main records, but it omits some internal provenance fields; use JSON for a complete restore. Every import has a preview.
 - Optionally hand off a note or review to Flomo. Direct sending requires a webhook configured locally by the user.
 
 Some behaviors still require device and migration validation. See [current status](docs/STATUS.md). A successful build alone does not prove that backup and restoration are safe.

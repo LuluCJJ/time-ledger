@@ -1,3 +1,5 @@
+import {parseReadableWorkbook} from './readable-excel-import.mjs';
+
 const HEADERS={
   '事件':['起始时间','结束时间','分类','备注','总时长','预估时长','标签'],
   '日志':['日期','日志类型','内容']
@@ -34,6 +36,7 @@ export async function parseLegacyExcel(arrayBuffer,fileName){
   if(!globalThis.XLSX)throw Error('Excel 读取组件尚未载入');
   const digest=bytesHex(new Uint8Array(await crypto.subtle.digest('SHA-256',arrayBuffer)));
   const workbook=globalThis.XLSX.read(arrayBuffer,{type:'array'});
+  if(workbook.Sheets['时间记录'])return parseReadableWorkbook(workbook,globalThis.XLSX,fileName,digest);
   const eventRows=readRows(workbook,'事件'),logRows=readRows(workbook,'日志');
   const unknown=new Map(),events=[];
   for(const {row,cells} of eventRows){

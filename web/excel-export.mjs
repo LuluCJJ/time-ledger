@@ -1,9 +1,8 @@
-const pad=value=>String(value).padStart(2,'0');
 const localDateTime=value=>{
   if(value===null||value===undefined||value==='')return '';
-  const date=new Date(value);
+  const date=new Date(Number(value)+8*3600_000);
   if(!Number.isFinite(date.getTime()))return '';
-  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  return date.toISOString().slice(0,19).replace('T',' ');
 };
 
 export function readableWorkbook(state,XLSX){
