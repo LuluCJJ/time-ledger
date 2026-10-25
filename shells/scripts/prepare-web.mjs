@@ -14,6 +14,7 @@ await mkdir(path.join(dest,'legal'),{recursive:true});
 await copyFile(path.resolve(root,'../LICENSE'),path.join(dest,'legal','PROJECT-LICENSE.txt'));
 await copyFile(path.join(source,'vendor','SHEETJS-LICENSE.txt'),path.join(dest,'legal','SHEETJS-LICENSE.txt'));
 await copyFile(path.join(root,'node_modules','@capacitor','android','LICENSE'),path.join(dest,'legal','CAPACITOR-LICENSE.txt'));
+await copyFile(path.resolve(root,'../docs/ANDROID_DEPENDENCIES.txt'),path.join(dest,'legal','ANDROID-DEPENDENCIES.txt'));
 const html=await readFile(path.join(dest,'index.html'),'utf8');
 if(!html.includes('<head>')||!html.includes('app.mjs')) throw Error('Web bundle is missing required HTML entry');
 console.log(`Prepared ${files.length} local web files in ${dest}`);

@@ -2,12 +2,14 @@ param(
     [Parameter(Mandatory = $true)][string]$Apk,
     [Parameter(Mandatory = $true)][string]$AndroidSdk,
     [Parameter(Mandatory = $true)][string]$ExpectedSignerSha256,
+    [Parameter(Mandatory = $true)][string]$DependencyReport,
     [string]$SourceRoot = (Join-Path $PSScriptRoot '../..')
 )
 
 $ErrorActionPreference = 'Stop'
 $apkPath = (Resolve-Path -LiteralPath $Apk).Path
 $sourceRoot = (Resolve-Path -LiteralPath $SourceRoot).Path
+$dependencyReportPath = (Resolve-Path -LiteralPath $DependencyReport).Path
 $buildTools = Get-ChildItem -LiteralPath (Join-Path $AndroidSdk 'build-tools') -Directory |
     Sort-Object { [version]($_.Name -replace '[^0-9.]', '') } -Descending |
     Select-Object -First 1
@@ -37,6 +39,19 @@ $sources = @{
     'PROJECT-LICENSE.txt' = Join-Path $sourceRoot 'LICENSE'
     'SHEETJS-LICENSE.txt' = Join-Path $sourceRoot 'web/vendor/SHEETJS-LICENSE.txt'
     'CAPACITOR-LICENSE.txt' = Join-Path $sourceRoot 'shells/node_modules/@capacitor/android/LICENSE'
+    'ANDROID-DEPENDENCIES.txt' = Join-Path $sourceRoot 'docs/ANDROID_DEPENDENCIES.txt'
+}
+$listed = @(Get-Content -LiteralPath $sources['ANDROID-DEPENDENCIES.txt'] | Where-Object { $_ -match '^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[0-9][A-Za-z0-9_.-]*$' } | Sort-Object -Unique)
+$resolved = @()
+foreach ($line in Get-Content -LiteralPath $dependencyReportPath) {
+    if ($line -match '([A-Za-z0-9_.-]+):([A-Za-z0-9_.-]+):([0-9][A-Za-z0-9_.-]*)(?: -> ([0-9][A-Za-z0-9_.-]*))?') {
+        $version = if ($matches[4]) { $matches[4] } else { $matches[3] }
+        $resolved += "$($matches[1]):$($matches[2]):$version"
+    }
+}
+$resolved = @($resolved | Sort-Object -Unique)
+if ($listed.Count -eq 0 -or $resolved.Count -eq 0 -or (Compare-Object -ReferenceObject $listed -DifferenceObject $resolved)) {
+    throw 'Bundled Android dependency attribution does not match the release runtime graph.'
 }
 $zip = [IO.Compression.ZipFile]::OpenRead($apkPath)
 try {
@@ -59,5 +74,6 @@ Write-Output "Verified package: app.personal.timeledger.official (1 / 1.0)"
 Write-Output 'Verified label: 时间账 正式版'
 Write-Output "Verified signer SHA-256: $actualSigner"
 Write-Output "Verified legal texts: $($sources.Count)"
+Write-Output "Verified release dependency coordinates: $($resolved.Count)"
 Write-Output "APK bytes: $($file.Length)"
 Write-Output "APK SHA-256: $apkHash"
