@@ -1,0 +1,2 @@
+# Keep bundled web source bytes stable across Windows checkouts.
+web/** text eol=lf
