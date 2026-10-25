@@ -4,7 +4,20 @@
 
 **See where your time went, then choose what to do next.** Time Ledger is a local-first personal time log. Start an activity, close it when you switch, correct the actual times later, and review the shape of your days, weeks, and months.
 
-## See a day and the shape of a week
+## Why this exists
+
+The project began with [episode 38 of the Chinese podcast *Zong Heng Si Hai*, on time poverty](https://www.xiaoyuzhoufm.com/episode/657d53aa20d779b49d86d299). Its discussion of time records made me look more closely at what actually occupied my days and where my impressions differed from the record. A recommendation in the comments led me to the Time Logger app (时间日志), which I used for a long time.
+
+Over time, I wanted the record to answer more than “how long?” I wanted to remember what happened, see the shape of a week, write my own interpretation, and keep a portable history. That led to an independent app. Time Ledger is not affiliated with the podcast or the existing app; their APK, code, artwork, and user data are not included here.
+
+## How we think about time records
+
+1. **Record facts before interpreting them.** Save actual start and end times. Compute elapsed time from the start and current clock. Make category totals reproducible and leave reflection to the person.
+2. **Leave gaps honest.** An unrecorded interval can stay unrecorded. The app does not invent an activity to complete a chart.
+3. **Make single-person use dependable.** An Android device can be the primary ledger. Records stay local and can be exported as a complete backup; cloud sync is not required.
+4. **Use the ledger to adjust action.** The timeline, weekly and monthly views, focus clock, and reviews support reflection without scoring every minute.
+
+## How it works
 
 Start an activity with a category and a real start time. Close it when you switch, then correct times or add notes later. The timeline keeps individual events visible; the weekly map shows work, growth, routine, leisure, and unrecorded gaps together. The focus clock narrows the screen to the current activity and elapsed time. Daily, weekly, and monthly reviews turn that record into reflection.
 
@@ -25,19 +38,6 @@ These images show the current web interface with **entirely fictional sample ent
 **Your records stay with you.** Data is stored on the current device. Export a readable Excel workbook or a complete JSON recovery backup; automatic cloud sync is not available. See [data and privacy](docs/DATA.md).
 
 **Before installing:** the [Android preview APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) is a separate app from the earlier trial package and does not automatically carry its data across. Migration between those installations has not been verified on an independent Android device. Keep the original installation and a complete backup. See [current limitations](docs/STATUS.md).
-
-## Origin
-
-The project began with [episode 38 of the Chinese podcast *Zong Heng Si Hai*, on time poverty](https://www.xiaoyuzhoufm.com/episode/657d53aa20d779b49d86d299). A recommendation in its comments led me to the Time Logger app (时间日志), which I used for a long time. As my records grew, I wanted a ledger that could also support notes, reflection, portable history, and my personal knowledge system. This project is an independent response to those needs.
-
-Time Ledger is not affiliated with the podcast or the existing app. Their product code, APK, artwork, and user data are not included here.
-
-## Design commitments
-
-1. **Record facts before interpreting them.** Store actual start and end times. Compute elapsed time from the saved start and the current clock. Keep numerical summaries reproducible and reflections editable by the person.
-2. **Leave gaps honest.** An unrecorded interval may stay unrecorded. The app does not invent activity to fill a chart.
-3. **Make single-person use reliable first.** The Android app is the current primary ledger. Data stays on the device and can be exported as a complete backup. Cloud sync is not required.
-4. **Use the ledger to reflect and act.** The timeline, weekly and monthly views, focus clock, and reviews should make patterns visible without scoring every minute.
 
 ## Current capabilities
 
