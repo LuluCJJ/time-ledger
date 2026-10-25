@@ -1,10 +1,30 @@
 # 时间账 · Time Ledger
 
-[English](README.en.md) · [设计原则](docs/PRODUCT.md) · [数据与隐私](docs/DATA.md) · [参与贡献](CONTRIBUTING.md) · [项目与发布边界](docs/PROJECT_GOVERNANCE.md) · [Android 发布](docs/ANDROID_RELEASE.md) · [第三方组件](docs/THIRD_PARTY.md)
+[English](README.en.md) · [下载 Android 预览版](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) · [产品原则](docs/PRODUCT.md) · [数据与隐私](docs/DATA.md) · [参与贡献](CONTRIBUTING.md)
 
 **把时间记清楚，才有机会重新选择怎么生活。** 时间账是一款以手机本地记录为主的个人时间账本。开始一段活动时记下起点，切换时结清上一段；之后可以修正时间、分类和备注，并按日、周、月回看生活的实际构成。
 
-> **当前备份状态（2026-10-24）：** 早期试用版曾生成 0 B JSON。此后用户提供的一份非空完整备份已在独立空账本中导入并在重载后核对记录数量。它证明该快照可恢复；仍需核对手机上新增的记录，并在另一台 Android 设备或隔离资料中演练恢复。请勿卸载现用应用、清除数据或直接迁移到不同签名的安装包。见[当前状态](docs/STATUS.md)与[数据应急预案](docs/ANDROID_DATA_RESCUE.md)。
+## 看见一天，也看见一周
+
+开始一段活动时，只需记下分类和起点；切换时结清上一段。时间线保留真实起止与备注，周视图把工作、提升、日常和娱乐放在同一张时间地图上。想专心做一件事时，打开只显示当前活动与经过时长的专注时钟。结束后再写下结果，回到日、周、月复盘。
+
+以下画面来自当前网页界面，使用**完全虚构的示例记录**；Android 版会随屏幕尺寸调整布局。
+
+### 日时间线：记录、补记、修改
+
+<img src="docs/images/timeline.png" alt="虚构数据展示的时间账日时间线与正在进行的活动" width="390">
+
+### 周时间地图：看时间分布和空档
+
+![虚构数据展示的周时间结构，灰色是日常，蓝色是工作，绿色是提升](docs/images/week.png)
+
+### 专注时钟：只看这一段
+
+![虚构数据展示的专注时钟](docs/images/focus.png)
+
+**数据由你保管。** 记录默认留在当前设备；可导出可读 Excel，也可导出用于完整恢复的 JSON。当前没有自动云同步。[了解数据边界](docs/DATA.md)。
+
+**安装提醒：** [公开的 Android 预览版](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)与早期试用版是两个独立应用，不会自动带入旧记录。跨应用迁移尚未经过独立 Android 真机验收；已有记录的使用者请保留原应用与完整备份。见[当前限制](docs/STATUS.md)。
 
 ## 为什么做
 

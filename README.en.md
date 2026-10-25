@@ -1,10 +1,30 @@
 # Time Ledger · 时间账
 
-[简体中文](README.md) · [Product principles](docs/PRODUCT.md) · [Data and privacy](docs/DATA.md) · [Contributing](CONTRIBUTING.md) · [Project and release boundaries](docs/PROJECT_GOVERNANCE.md) · [Android release](docs/ANDROID_RELEASE.md) · [Third-party components](docs/THIRD_PARTY.md)
+[简体中文](README.md) · [Android preview](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) · [Product principles](docs/PRODUCT.md) · [Data and privacy](docs/DATA.md) · [Contributing](CONTRIBUTING.md)
 
 **See where your time went, then choose what to do next.** Time Ledger is a local-first personal time log. Start an activity, close it when you switch, correct the actual times later, and review the shape of your days, weeks, and months.
 
-> **Current backup status (2026-10-24):** Earlier phone trials produced 0-byte JSON files. A later complete backup supplied by the user was imported into a fresh, separate ledger and its record counts persisted after reload. This establishes that the supplied snapshot is restorable; newer phone records still need comparison, and an Android restore rehearsal remains open. Keep the installed app and its data. Do not uninstall, clear data, or move to a differently signed package. See [current status](docs/STATUS.md) and the [data rescue procedure](docs/ANDROID_DATA_RESCUE.md).
+## See a day and the shape of a week
+
+Start an activity with a category and a real start time. Close it when you switch, then correct times or add notes later. The timeline keeps individual events visible; the weekly map shows work, growth, routine, leisure, and unrecorded gaps together. The focus clock narrows the screen to the current activity and elapsed time. Daily, weekly, and monthly reviews turn that record into reflection.
+
+These images show the current web interface with **entirely fictional sample entries**. The Android layout adapts to the device.
+
+### Daily timeline
+
+<img src="docs/images/timeline.png" alt="Daily timeline with fictional entries and a running activity" width="390">
+
+### Weekly time map
+
+![Weekly time map with fictional entries](docs/images/week.png)
+
+### Focus clock
+
+![Focus clock with a fictional reading activity](docs/images/focus.png)
+
+**Your records stay with you.** Data is stored on the current device. Export a readable Excel workbook or a complete JSON recovery backup; automatic cloud sync is not available. See [data and privacy](docs/DATA.md).
+
+**Before installing:** the [Android preview APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) is a separate app from the earlier trial package and does not automatically carry its data across. Migration between those installations has not been verified on an independent Android device. Keep the original installation and a complete backup. See [current limitations](docs/STATUS.md).
 
 ## Origin
 

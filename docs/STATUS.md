@@ -1,25 +1,19 @@
 # 当前状态
 
-更新：2026-10-25。源码已公开于 [LuluCJJ/time-ledger](https://github.com/LuluCJJ/time-ledger)，现有签名 APK 已作为 [1.0 预览版](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) 发布。Windows 安装包尚未公开。
+时间账仍在预览阶段。[Android 预览版 APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)已公开；Windows 安装包暂未公开。
 
-## 已实现
+## 可以做什么
 
-- 本地时间记录、起止时间修正、空档补记、中途切换和两级彩色分类。
-- 日时间线、周月预览、每日计划、日周月总结及专注时钟。
-- 旧时间日志 Excel 导入预览、时间账可读 Excel 导出／导入、完整 JSON 备份与恢复、可选 Flomo 发送。
-- Android APK 与 Windows 桌面包可从源码构建。记录留在各自设备；当前没有自动云同步。
+- 在设备上记录、修改和补记活动，使用两级彩色分类，按日、周、月回看。
+- 使用专注时钟，填写每日计划、日周月总结。
+- 导入旧时间日志 Excel；导出可读 Excel、CSV 和完整 JSON 备份。
+- 选择性地将备注或总结填入 Flomo 草稿；直接发送需自行配置接入地址。
 
-## 已核对
+## 使用前应知道
 
-- 试用版已在手机真实使用；用户确认 v41 的最近导出打开、分享和可读 Excel 导入预览正常。此前的 0 B 导出不是有效备份。
-- 用户提供的完整 JSON 与旧 Excel 已在私人目录核对。修复候选在隔离浏览器中经产品导入入口恢复，并核对数量、字段与刷新后的持久保存；私人数据不进入公开仓库。
-- 现有正式签名 APK 已核对包名 `app.personal.timeledger.official`、显示名“时间账 正式版”、签名、版本和包内许可与依赖归属。构建源码为提交 `4caa50f`；APK SHA-256 为 `2447E5C92696630E67C3FB1EC1B8A163FED1E193DAE337C520977BF771C43EE8`。公开源码与 Windows 打包检查持续在 CI 运行。
+- 数据保存在当前设备，浏览器、Android 和 Windows 之间没有自动同步。
+- 完整恢复应使用 JSON；Excel 适合阅读与筛选，无法保留全部内部字段。请确认导出文件非空，并在独立环境演练恢复。
+- Android 预览版的包名是 `app.personal.timeledger.official`，与早期试用版独立安装，**不会自动继承试用版记录**。两者之间的真实数据迁移尚未经过独立 Android 真机验收。
+- 从旧备份恢复仍在进行中的活动时，计时会沿用旧起点；迁移前宜先结束该活动，再导出新备份。
 
-## 发布预览版时需说明
-
-- 正式版与现用试用版是不同包名，**不会自动共享记录**。用户须自行保留原应用和完整备份，再决定是否迁入。
-- 正式版在独立 Android 安装上的 JSON 恢复与试用版并行迁移没有做真机验证；仓库所有者决定跳过这次复测，[发布说明](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)已明示此限制。
-- 备份若含仍在进行中的活动，导入后会沿用旧起点继续计时。正式迁移宜在结束当前活动后重新导出。
-- 永久签名材料尚无离线副本；Windows 包尚未作为公开安装包发布。
-
-发布与验收细节见[发布验收表](RELEASE_READINESS.md)、[Android 发布说明](ANDROID_RELEASE.md)和[第三方归属](THIRD_PARTY.md)。
+开发与发布流程见 [Android 发布说明](ANDROID_RELEASE.md)、[数据与隐私](DATA.md)及[第三方组件](THIRD_PARTY.md)。

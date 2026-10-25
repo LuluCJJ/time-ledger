@@ -24,11 +24,11 @@ Link across these levels. Do not copy personal records or private research into 
 
 Debug APKs built with the existing signing key are trial builds. A source release can precede a downloadable release, but must state the phone-data and migration limits accurately. Never replace an installed app with a package that has an incompatible signing identity without a verified data transfer plan.
 
-## Open decisions
+## Current release boundary
 
 - Public repository: [`LuluCJJ/time-ledger`](https://github.com/LuluCJJ/time-ledger).
 - Original project license: Apache-2.0.
-- First publication scope: source only, published on 2026-10-23.
-- Formal Android signing and upgrade path for users of the trial package.
+- Source and signed Android preview APK are public; see the [release page](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1).
+- The formal Android package is separate from the earlier trial package. Migration between them is not automatic or independently verified on Android.
 
 See [current status](STATUS.md) for verification still outstanding.

@@ -1,8 +1,8 @@
 # Reading data from an installed debug APK
 
-Use this only for a device you own and have explicitly authorized for USB debugging. It is a contingency when the installed app still has records but its JSON export creates an empty file. It does **not** install, uninstall, clear, or modify the phone app. The current user's phone has not yet been tested with this procedure.
+Use this only for a device you own and have explicitly authorized for USB debugging. It is a contingency when a debuggable installation still has records but normal JSON export fails. It does **not** install, uninstall, clear, or modify the phone app.
 
-The v35 trial APK's compiled manifest confirms package `app.personal.timeledger` and `android:debuggable=true`; the installed phone APK still needs its own check. Android's `run-as` command can read that app's private files only while a debuggable build remains installed. A later signed release build will not support this route. The manifest disables Android's automatic backup and the data extraction rules exclude app data, so device cloud restore must not be assumed to cover these records. The archive may contain full time records, private notes, and the locally saved Flomo webhook; never upload it to a public repository or support ticket.
+Check that the installed package is `app.personal.timeledger` and actually has `android:debuggable=true`. Android's `run-as` command can read private files only while a debuggable build remains installed; the signed release build does not support this route. The archive may contain full time records, private notes, and the locally saved Flomo webhook; never upload it to a public repository or support ticket.
 
 ## Procedure
 

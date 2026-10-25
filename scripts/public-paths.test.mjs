@@ -11,6 +11,9 @@ test('only known configuration JSON and generated Android art are accepted',()=>
     'shells/android/app/src/main/res/drawable-land-xxxhdpi/splash.png',
     'shells/android/app/src/main/res/drawable-port-xhdpi/splash.png',
     'shells/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png',
+    'docs/images/timeline.png',
+    'docs/images/week.png',
+    'docs/images/focus.png',
   ]) assert.equal(isUnsafePublicPath(path),false,path);
 });
 
@@ -19,6 +22,7 @@ test('private records and screenshots are rejected even with ordinary file names
     'notes.json',
     'data/records.JSON',
     'screenshots/timeline.png',
+    'docs/images/private-record.png',
     'shells/android/app/src/main/res/mipmap-mdpi/personal.png',
     'feedback.jpg',
     'assets/preview.svg',
