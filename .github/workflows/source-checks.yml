@@ -28,3 +28,20 @@ jobs:
       - name: Audit locked build dependencies
         run: npm audit --audit-level=moderate
         working-directory: shells
+
+  desktop-package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install locked desktop dependencies
+        run: npm ci
+        working-directory: shells
+      - name: Build and verify Windows package
+        run: npm run desktop:package
+        working-directory: shells
