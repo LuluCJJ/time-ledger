@@ -21,11 +21,11 @@ export function readableWorkbook(state,XLSX){
     return current||category;
   };
   add('时间记录',
-    ['开始时间','结束时间','一级分类','具体分类','用时（分钟）','备注','状态','预估（分钟）','原标签','来源行号','事件ID','分类ID'],
+    ['开始时间','结束时间','一级分类','具体分类','用时（分钟）','备注','状态','预估（分钟）','原标签','来源行号','事件ID','分类ID','原分类名','原总时长','原预估时长'],
     [...state.events].sort((a,b)=>a.start-b.start).map(e=>{
       const category=categories.get(e.categoryId),root=rootFor(category);
-      return [localDateTime(e.start),localDateTime(e.end),root?.name||'',category?.name||'',e.end===null?'':Math.round((e.end-e.start)/60000*100)/100,e.note||'',e.end===null?'进行中':'已结束',e.estimateSeconds==null?'':Math.round(e.estimateSeconds/60*100)/100,e.legacyTags||'',e.sourceRow??'',e.id,e.categoryId];
-    }),[21,21,18,22,15,60,12,17,30,12,24,24]);
+      return [localDateTime(e.start),localDateTime(e.end),root?.name||'',category?.name||'',e.end===null?'':Math.round((e.end-e.start)/60000*100)/100,e.note||'',e.end===null?'进行中':'已结束',e.estimateSeconds==null?'':Math.round(e.estimateSeconds/60*100)/100,e.legacyTags||'',e.sourceRow??'',e.id,e.categoryId,e.sourceCategoryName??'',e.legacyDuration??'',e.legacyEstimate??''];
+    }),[21,21,18,22,15,60,12,17,30,12,24,24,22,18,18]);
   add('分类',['分类ID','名称','一级分类','上级ID','颜色','已归档'],
     state.categories.map(c=>[c.id,c.name,rootFor(c)?.name||'',c.parentId||'',c.color,c.archived?'是':'否']),[28,24,20,28,14,12]);
   add('日志',['日期','类型','内容','来源行号'],

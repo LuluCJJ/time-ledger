@@ -1,11 +1,12 @@
 import {MINUTE,seed,initializeCategories,ordered,propose,proposeSwitch,proposeSplit,proposeMergeSplit,allocate,localInput,time,dayKey,duration,clockParts,estimateStatus} from './model.mjs?v=21';
 import {parseImport,backupText,csvText} from './portability.mjs?v=21';
-import {parseLegacyExcel} from './legacy-excel.mjs?v=18';
+import {parseLegacyExcel} from './legacy-excel.mjs?v=19';
+import {preserveReadableImport} from './readable-excel-import.mjs?v=3';
 import {whiteLabelColor} from './color.mjs?v=19';
 import {periodInsights} from './insights.mjs?v=19';
 import {flomoDraftUrl,eventFlomoText,reviewFlomoText,validateFlomoWebhook,flomoPayload,flomoAccepted} from './flomo.mjs?v=23';
 import {loadLocalState,persistLocalState} from './storage.mjs?v=2';
-import {readableExcelBase64} from './excel-export.mjs?v=2';
+import {readableExcelBase64} from './excel-export.mjs?v=3';
 const KEY='personal-time-ledger-demo-v1';
 const FLOMO_KEY='personal-time-ledger-flomo-webhook-v1';
 const $=s=>document.querySelector(s);
@@ -156,7 +157,8 @@ function exportLogs(button){const rows=state.logs.map(x=>[x.date,x.type,x.conten
 async function prepareImport(file){if(!file)return;pendingImport=null;$('#importFile').value='';try{if(file.size>30*1024*1024)throw Error('文件超过 30 MB 的大小限制');
     const excel=/\.xlsx?$/i.test(file.name),parsed=excel?await parseLegacyExcel(await file.arrayBuffer(),file.name):null;
     if(!excel&&!/\.json$/i.test(file.name))throw Error('请选择 .xls、.xlsx 或 .json 文件');
-    const incoming=normalizeState(parseImport(excel?JSON.stringify(parsed.payload):await file.text(),excel?seed().categories:state.categories));
+    let incoming=normalizeState(parseImport(excel?JSON.stringify(parsed.payload):await file.text(),excel?seed().categories:state.categories));
+    if(parsed?.report?.kind==='readable')incoming=preserveReadableImport(state,incoming);
     const report=parsed?.report,details=report?.kind==='readable'?`<p>这是时间账导出的可读表格，包含 ${report.reviews} 条日周月总结。表格未保留全部内部来源字段，恢复后请核对最近记录、备注和分类；若有同日 JSON，请优先用 JSON 完整恢复。</p><p>来源 SHA-256：<code>${report.sha256}</code></p>`:report?`<p>来源 SHA-256：<code>${report.sha256}</code></p><p>时间范围：${esc(new Date(report.firstStart).toLocaleString('zh-CN'))} 至 ${esc(new Date(report.lastEnd).toLocaleString('zh-CN'))}；有备注 ${report.noteCount} 条，零时长 ${report.zeroDuration} 条。</p><p>未匹配分类：${report.unknownCategories.length?esc(report.unknownCategories.join('、')):'无'}。旧表里的“工作”暂映射到“工作 / 工作”，请核对。</p>`:'';
     pendingImport=incoming;$('#importSummary').innerHTML=`<p>文件：${esc(file.name)}</p><p>当前设备：${state.events.length} 条事件、${state.logs.length} 条日志。</p><p>将替换为：<strong>${incoming.events.length} 条事件、${incoming.logs.length} 条日志、${incoming.categories.length} 个分类</strong>。</p>${details}<p>当前数据会被覆盖。若需要保留，请先下载完整 JSON 备份。</p>`;$('#importError').textContent='';$('#importPreview').showModal();
   }catch(error){alert(`无法预览导入文件：${error.message}`)}}
