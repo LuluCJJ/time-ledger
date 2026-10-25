@@ -71,4 +71,8 @@ The user then supplied a phone screenshot showing that selecting a Time Ledger r
 1. Public name and GitHub account: `LuluCJJ/time-ledger` selected.
 2. License: Apache-2.0 selected on 2026-10-23.
 3. First scope: source-only preview selected, then a signed APK after real-phone backup and upgrade checks.
-4. Formal Android identity: `app.personal.timeledger.official` / `时间账 正式版` approved on 2026-10-24. Permanent signing-key custody and phone cutover remain open.
+4. Formal Android identity: `app.personal.timeledger.official` / `时间账 正式版` approved on 2026-10-24. The owner authorized local custody of a permanent signing key on 2026-10-25; phone cutover remains open.
+
+## Formal Android candidate (local, unpublished)
+
+A fresh Windows checkout of `76a2fa9` retained LF endings for tracked web sources and built a signed release APK. `apksigner` verifies it; `aapt` reports the approved package ID, versionCode 1/versionName 1.0 and label `时间账 正式版`. The signing certificate SHA-256 digest is `AB11858DFB060B7C784178EF446EE8BD687B37CC6304AB31FE3146E0D14D911`. The APK is 3,671,504 bytes with SHA-256 `D4B30452D7B9D291B9F67F9505AED53E74CB548A2E0B230FE9C82470EBBD2296`. Signing material is stored locally outside Git; only the certificate digest is documented here. This is a candidate, not a published APK or a successful phone restore. Complete the exact binary license/NOTICE audit, fresh data reconciliation, Android restore and parallel cutover checks before publication.
