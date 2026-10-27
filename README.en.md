@@ -19,7 +19,7 @@ Over time, I wanted the record to answer more than “how long?” I wanted to r
 
 ## How it works
 
-Start an activity with a category and a real start time. Close it when you switch, then correct times or add notes later. The timeline keeps individual events visible; the weekly map shows work, growth, routine, leisure, and unrecorded gaps together. The focus clock narrows the screen to the current activity and elapsed time. Daily, weekly, and monthly reviews turn that record into reflection.
+Start an activity with a category and a real start time. Close it when you switch, then correct times or add notes later. The timeline keeps individual events visible; the weekly map shows work, growth, routine, leisure, and unrecorded gaps together. The focus clock narrows the screen to the current activity and elapsed time. Add a thought to the existing activity note, or optionally revisit local reflection prompts, today’s plan, and previous notes. This does not create another timed activity. Daily, weekly, and monthly reviews turn that record into reflection.
 
 These images show the current web interface with **entirely fictional sample entries**. The Android layout adapts to the device.
 
@@ -37,13 +37,13 @@ These images show the current web interface with **entirely fictional sample ent
 
 **Your records stay with you.** Data is stored on the current device. Export a readable Excel workbook or a complete JSON recovery backup; automatic cloud sync is not available. See [data and privacy](docs/DATA.md).
 
-**Before installing:** the [Android preview APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) is a separate app from the earlier trial package and does not automatically carry its data across. Migration between those installations has not been verified on an independent Android device. Keep the original installation and a complete backup. See [current limitations](docs/STATUS.md).
+**Before installing:** screenshots and features describe the latest source. The currently published APK is older and does not yet include this visual and reflection update. The [Android preview APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) is a separate app from the earlier trial package and does not automatically carry its data across. Migration between those installations has not been verified on an independent Android device. Keep the original installation and a complete backup. See [current limitations](docs/STATUS.md).
 
 ## Current capabilities
 
 - Start, finish, and switch activities; edit times and notes; review neighboring time changes.
 - One hierarchical, color-coded category per record; daily timeline and weekly/monthly views.
-- A focus clock based on actual elapsed time, with an optional expected end; Android supports keep-awake, landscape, and immersive full screen.
+- A focus clock based on actual elapsed time, with an optional expected end; Android supports keep-awake, landscape, and immersive full screen. Optional reflection prompts and notes stay with the existing activity.
 - Daily plans and summaries, category distributions, and written weekly/monthly reviews.
 - Import legacy `.xls` or compatible `.xlsx`; export a readable five-sheet Excel workbook, a full JSON recovery backup, or CSV files. Time Ledger's readable workbook can also be imported to recover the main records, but it omits some internal provenance fields; use JSON for a complete restore. Every import has a preview.
 - Optionally hand off a note or review to Flomo. Direct sending requires a webhook configured locally by the user.

@@ -1,11 +1,11 @@
 # 当前状态
 
-时间账仍在预览阶段。[Android 预览版 APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)已公开；Windows 安装包暂未公开。
+时间账仍在预览阶段。[Android 预览版 APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)已公开；Windows 安装包暂未公开。公开 APK 仍为较早版本；最新源码包含新版界面与专注页留白记录，尚未发布对应正式签名安装包。
 
 ## 可以做什么
 
 - 在设备上记录、修改和补记活动，使用两级彩色分类，按日、周、月回看。
-- 使用专注时钟，填写每日计划、日周月总结。
+- 使用专注时钟，在同一活动备注中记录想法，按需查看留白提示；填写每日计划、日周月总结。
 - 导入旧时间日志 Excel；导出可读 Excel、CSV 和完整 JSON 备份。
 - 选择性地将备注或总结填入 Flomo 草稿；直接发送需自行配置接入地址。
 
