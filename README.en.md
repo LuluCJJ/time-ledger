@@ -1,6 +1,6 @@
 # Time Ledger · 时间账
 
-[简体中文](README.md) · [Android preview](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) · [Product principles](docs/PRODUCT.md) · [Data and privacy](docs/DATA.md) · [Contributing](CONTRIBUTING.md)
+[简体中文](README.md) · [Android preview](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) · [Changelog](CHANGELOG.md#english) · [Product principles](docs/PRODUCT.md) · [Data and privacy](docs/DATA.md) · [Contributing](CONTRIBUTING.md)
 
 **See where your time went, then choose what to do next.** Time Ledger is a local-first personal time log. Start an activity, close it when you switch, correct the actual times later, and review the shape of your days, weeks, and months.
 
@@ -16,6 +16,12 @@ Over time, I wanted the record to answer more than “how long?” I wanted to r
 2. **Leave gaps honest.** An unrecorded interval can stay unrecorded. The app does not invent an activity to complete a chart.
 3. **Make single-person use dependable.** An Android device can be the primary ledger. Records stay local and can be exported as a complete backup; cloud sync is not required.
 4. **Use the ledger to adjust action.** The timeline, weekly and monthly views, focus clock, and reviews support reflection without scoring every minute.
+
+## Recent updates
+
+**2026-10-27 · Source updated; APK not yet released:** a clearer timeline and category hierarchy, plus in-focus notes, reflection prompts, and switching to the next activity. [See this update](CHANGELOG.md#2026-10-27--source-update-apk-not-yet-released).
+
+**Current public download:** [v1.0.0-preview.1 · 2026-10-25](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1). This APK predates the source update above. [Full changelog](CHANGELOG.md#english).
 
 ## How it works
 

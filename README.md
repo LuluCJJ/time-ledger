@@ -1,6 +1,6 @@
 # 时间账 · Time Ledger
 
-[English](README.en.md) · [下载 Android 预览版](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) · [产品原则](docs/PRODUCT.md) · [数据与隐私](docs/DATA.md) · [参与贡献](CONTRIBUTING.md)
+[English](README.en.md) · [下载 Android 预览版](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) · [更新记录](CHANGELOG.md) · [产品原则](docs/PRODUCT.md) · [数据与隐私](docs/DATA.md) · [参与贡献](CONTRIBUTING.md)
 
 **把时间记清楚，才有机会重新选择怎么生活。** 时间账是一款以手机本地记录为主的个人时间账本。开始一段活动时记下起点，切换时结清上一段；之后可以修正时间、分类和备注，并按日、周、月回看生活的实际构成。
 
@@ -16,6 +16,12 @@
 2. **允许生活有空白。** 未记录的几分钟可以留空，不为了让图表完整而编造活动。
 3. **让一个人可靠地用起来。** Android 设备可以是主账本，记录留在本机，用户可导出完整备份；使用不依赖云同步。
 4. **从账本回到行动。** 时间线、周月结构、专注时钟与总结用于回看和调整，不给每一分钟打分。
+
+## 近期更新
+
+**2026-10-27 · 已更新源码，安装包待发布：** 首页时间线更易浏览，分类分层展示；专注页支持随手记录、留白提示和切换下一段。[查看本次更新](CHANGELOG.md#2026-10-27--源码更新尚未发布安装包)。
+
+**当前公开下载：** [v1.0.0-preview.1 · 2026-10-25](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)。该安装包早于上述源码更新。[全部更新记录](CHANGELOG.md)。
 
 ## 怎么使用
 
@@ -37,7 +43,7 @@
 
 **数据由你保管。** 记录默认留在当前设备；可导出可读 Excel，也可导出用于完整恢复的 JSON。当前没有自动云同步。[了解数据边界](docs/DATA.md)。
 
-**安装提醒：** 下方截图和功能说明对应最新源码；现有公开 APK 仍为较早版本，不包含本轮视觉与留白更新。[公开的 Android 预览版](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)与早期试用版是两个独立应用，不会自动带入旧记录。跨应用迁移尚未经过独立 Android 真机验收；已有记录的使用者请保留原应用与完整备份。见[当前限制](docs/STATUS.md)。
+**安装提醒：** 上方截图和功能说明对应最新源码；现有公开 APK 仍为较早版本，不包含本轮视觉与留白更新。[公开的 Android 预览版](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)与早期试用版是两个独立应用，不会自动带入旧记录。跨应用迁移尚未经过独立 Android 真机验收；已有记录的使用者请保留原应用与完整备份。见[当前限制](docs/STATUS.md)。
 
 ## 已实现的主要流程
 
