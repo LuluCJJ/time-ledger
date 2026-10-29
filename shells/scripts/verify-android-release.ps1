@@ -28,8 +28,8 @@ if ($wantedSigner.Length -ne 64 -or $actualSigner -ne $wantedSigner) { throw 'AP
 
 $badging = (& $aapt dump badging $apkPath 2>&1) -join "`n"
 if ($LASTEXITCODE -ne 0) { throw "APK metadata inspection failed: $badging" }
-if ($badging -notmatch "(?m)^package: name='app\.personal\.timeledger\.official' versionCode='1' versionName='1\.0'") {
-    throw 'APK package ID or initial version differs from the approved release identity.'
+if ($badging -notmatch "(?m)^package: name='app\.personal\.timeledger\.official' versionCode='2' versionName='1\.0\.0-preview\.2'") {
+    throw 'APK package ID or release version differs from the approved release identity.'
 }
 if ($badging -notmatch "(?m)^application-label:'时间账 正式版'") { throw 'APK display name differs from the approved release label.' }
 if ($badging -notmatch "(?m)^launchable-activity:.*label='时间账 正式版'") { throw 'APK launcher name differs from the approved release label.' }
@@ -70,7 +70,7 @@ finally { $zip.Dispose() }
 $file = Get-Item -LiteralPath $apkPath
 if ($file.Length -le 0) { throw 'APK file is empty.' }
 $apkHash = (Get-FileHash -LiteralPath $apkPath -Algorithm SHA256).Hash
-Write-Output "Verified package: app.personal.timeledger.official (1 / 1.0)"
+Write-Output "Verified package: app.personal.timeledger.official (2 / 1.0.0-preview.2)"
 Write-Output 'Verified label: 时间账 正式版'
 Write-Output "Verified signer SHA-256: $actualSigner"
 Write-Output "Verified legal texts: $($sources.Count)"

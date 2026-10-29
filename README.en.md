@@ -1,6 +1,6 @@
 # Time Ledger · 时间账
 
-[简体中文](README.md) · [Android preview](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) · [Changelog](CHANGELOG.md#english) · [Product principles](docs/PRODUCT.md) · [Data and privacy](docs/DATA.md) · [Contributing](CONTRIBUTING.md)
+[简体中文](README.md) · [Android preview](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.2) · [Changelog](CHANGELOG.md#english) · [Product principles](docs/PRODUCT.md) · [Data and privacy](docs/DATA.md) · [Contributing](CONTRIBUTING.md)
 
 **See where your time went, then choose what to do next.** Time Ledger is a local-first personal time log. Start an activity, close it when you switch, correct the actual times later, and review the shape of your days, weeks, and months.
 
@@ -23,7 +23,7 @@ Over time, I wanted the record to answer more than “how long?” I wanted to r
 
 **2026-10-27 · Source updated; APK not yet released:** a clearer timeline and category hierarchy, plus in-focus notes, reflection prompts, and switching to the next activity. [See this update](CHANGELOG.md#2026-10-27--source-update-apk-not-yet-released).
 
-**Current public download:** [v1.0.0-preview.1 · 2026-10-25](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1). This APK predates the source update above. [Full changelog](CHANGELOG.md#english).
+**Current public download:** [v1.0.0-preview.2 · 2026-10-29](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.2). This APK includes the current interface and reflection update. [Full changelog](CHANGELOG.md#english).
 
 ## How it works
 
@@ -45,7 +45,7 @@ These images show the current web interface with **entirely fictional sample ent
 
 **Your records stay with you.** Data is stored on the current device. Export a readable Excel workbook or a complete JSON recovery backup; automatic cloud sync is not available. See [data and privacy](docs/DATA.md).
 
-**Before installing:** screenshots and features describe the latest source. The currently published APK is older and does not yet include this visual and reflection update. The [Android preview APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) is a separate app from the earlier trial package and does not automatically carry its data across. Migration between those installations has not been verified on an independent Android device. Keep the original installation and a complete backup. See [current limitations](docs/STATUS.md).
+**Before installing:** screenshots and features describe the latest source. The published v1.0.0-preview.2 APK includes this visual and reflection update. The [Android preview APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.2) is a separate app from the earlier trial package and does not automatically carry its data across. Migration between those installations has not been verified on an independent Android device. Keep the original installation and a complete backup. See [current limitations](docs/STATUS.md).
 
 ## Current capabilities
 
@@ -76,4 +76,4 @@ The Android launcher and splash artwork is generated from original shapes by `sh
 
 `web/` contains the app and tests; `shells/` contains Android and Windows wrappers; `docs/` contains product and data notes. The public source must not contain actual time records, old Excel exports, a private Wiki, screen recordings, Flomo webhooks, signing keys, or built APK/EXE files. See [data and privacy](docs/DATA.md).
 
-The original project code and documentation are licensed under the [Apache License 2.0](LICENSE). Third-party components retain their own licenses; see [third-party components](docs/THIRD_PARTY.md). A signed [Android 1.0 preview APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) is available. It has separate local data from the earlier trial app; migration into the formal package has not been tested on an independent Android installation. See [current status](docs/STATUS.md).
+The original project code and documentation are licensed under the [Apache License 2.0](LICENSE). Third-party components retain their own licenses; see [third-party components](docs/THIRD_PARTY.md). A signed [Android 1.0 preview APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.2) is available. It has separate local data from the earlier trial app; migration into the formal package has not been tested on an independent Android installation. See [current status](docs/STATUS.md).

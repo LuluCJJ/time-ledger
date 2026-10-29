@@ -1,6 +1,6 @@
 # 当前状态
 
-时间账仍在预览阶段。[Android 预览版 APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)已公开；Windows 安装包暂未公开。公开 APK 仍为较早版本；最新源码包含新版界面与专注页留白记录，尚未发布对应正式签名安装包。
+时间账仍在预览阶段。[Android 预览版 APK](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.2)已公开；Windows 安装包暂未公开。v1.0.0-preview.2 包含新版界面、分类图标、专注留白和周/月环形图。
 
 ## 可以做什么
 

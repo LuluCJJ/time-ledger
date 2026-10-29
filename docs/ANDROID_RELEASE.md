@@ -23,4 +23,4 @@ For the exact artifact intended for distribution, record its version, package ID
 
 A different package ID or signing certificate does not inherit an installed app's local data. Export a nonempty complete JSON backup, keep a copy outside the phone, restore it in an isolated installation, and compare record, category, log, review and recent-note counts before switching. Keep the old app installed until the new copy has been checked. If the backup contains a running event, finish that event and make a fresh export before the final move; otherwise its original start time continues after import.
 
-The [Android preview release](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1) has not undergone an independent Android migration rehearsal from the earlier trial package. This limitation is also listed in [current status](STATUS.md).
+The [Android preview release](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.2) has not undergone an independent Android migration rehearsal from the earlier trial package. This limitation is also listed in [current status](STATUS.md).
