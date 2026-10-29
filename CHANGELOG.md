@@ -4,6 +4,14 @@
 
 ## 中文
 
+### 2026-10-29 · 源码更新，公开 APK 待发布
+
+- 暖白与浅绿界面、分类图标、左侧分类与右侧时长、紧凑 Flomo 入口。
+- 手机底部导航与页签横滑，保留周/月周期切换及周图缩放。
+- 周/月分类占比环形图、无备注紧凑卡片、底部切换活动、长计划自动展开。
+- 当前公开下载仍为 v1.0.0-preview.1；以上属于较新的源码与本地试用能力。
+
+
 ### 2026-10-27 · 源码更新，尚未发布安装包
 
 源码：[e821451](https://github.com/LuluCJJ/time-ledger/commit/e821451)。这轮更新已进入公开源码；当前公开 APK 不包含以下变化。
@@ -17,6 +25,14 @@
 首个公开 Android 预览包，包含时间记录、日周月查看、专注时钟、总结、Excel 导出、JSON 备份和可选 Flomo 连接。[下载与安装说明](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1)。
 
 ## English
+
+### 2026-10-29 · Source update; public APK pending
+
+- Warm light surfaces, category icons, left-aligned category headings and a compact Flomo action.
+- Mobile bottom navigation and page swipes, retaining period navigation and chart zoom.
+- Weekly/monthly category donut charts, compact empty entries, bottom activity controls and expanding daily notes.
+- The public download remains v1.0.0-preview.1; these updates are in source and local trial builds.
+
 
 ### 2026-10-27 · Source update, APK not yet released
 

@@ -19,6 +19,8 @@ Over time, I wanted the record to answer more than “how long?” I wanted to r
 
 ## Recent updates
 
+**2026-10-29 · Latest source:** warm light UI, category icons, weekly/monthly donut charts, compact notes and mobile bottom navigation. [Details](CHANGELOG.md#english).
+
 **2026-10-27 · Source updated; APK not yet released:** a clearer timeline and category hierarchy, plus in-focus notes, reflection prompts, and switching to the next activity. [See this update](CHANGELOG.md#2026-10-27--source-update-apk-not-yet-released).
 
 **Current public download:** [v1.0.0-preview.1 · 2026-10-25](https://github.com/LuluCJJ/time-ledger/releases/tag/v1.0.0-preview.1). This APK predates the source update above. [Full changelog](CHANGELOG.md#english).
